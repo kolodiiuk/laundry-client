@@ -98,7 +98,7 @@ function Main(props: BoxProps) {
             component="main"
             className="Main"
             {...props}
-            sx={[{ p: 2 }, ...(Array.isArray(props.sx) ? props.sx : [props.sx])]}
+            sx={[{p: 2}, ...(Array.isArray(props.sx) ? props.sx : [props.sx])]}
         />
     );
 }
@@ -106,12 +106,12 @@ function Main(props: BoxProps) {
 function SideDrawer(
     props: BoxProps & { onClose: React.MouseEventHandler<HTMLDivElement> },
 ) {
-    const { onClose, ...other } = props;
+    const {onClose, ...other} = props;
     return (
         <Box
             {...other}
             sx={[
-                { position: 'fixed', zIndex: 1200, width: '100%', height: '100%' },
+                {position: 'fixed', zIndex: 1200, width: '100%', height: '100%'},
                 ...(Array.isArray(other.sx) ? other.sx : [other.sx]),
             ]}
         >
@@ -121,8 +121,6 @@ function SideDrawer(
                 sx={{
                     position: 'absolute',
                     inset: 0,
-                    // bgcolor: (theme) =>
-                    //     `rgba(${theme.vars.palette.neutral.darkChannel} / 0.8)`,
                 }}
             />
             <Paper
@@ -132,7 +130,6 @@ function SideDrawer(
                     height: '100%',
                     p: 2,
                     boxShadow: 'lg',
-                    // bgcolor: 'background.surface',
                 }}
             >
                 {other.children}

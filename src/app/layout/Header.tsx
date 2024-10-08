@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
 import {LocalLaundryServiceSharp, LoginSharp, MenuRounded, ShoppingCart} from "@mui/icons-material";
-import ColorSchemeToggle from "../../../components/common/ColorSchemeToggle.tsx";
+import ColorSchemeToggle from "../../components/common/ColorSchemeToggle.tsx";
 import Tooltip from "@mui/material/Tooltip";
 
 export default function Header() {
@@ -50,7 +50,7 @@ export default function Header() {
                 </Button>
             </Stack>
             <Box sx={{display: {xs: 'inline-flex', sm: 'none'}}}>
-                <IconButton >
+                <IconButton>
                     <MenuRounded/>
                 </IconButton>
             </Box>
@@ -62,8 +62,8 @@ export default function Header() {
                     alignItems: 'center',
                 }}
             >
-                <Tooltip title={"Basket"} >
-                    <IconButton 
+                <Tooltip title={"Basket"}>
+                    <IconButton
                         color={"secondary"}
                         href={"/basket"}
                     >
@@ -71,7 +71,7 @@ export default function Header() {
                     </IconButton>
                 </Tooltip>
                 <ColorSchemeToggle/>
-                <Tooltip title={"Log in/Register"} >
+                <Tooltip title={"Log in/Register"}>
                     <IconButton
                         href={"/login"}
                         color={"secondary"}
