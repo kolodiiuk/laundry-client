@@ -112,14 +112,10 @@ export default function Sidebar() {
                 }}
                 onClick={() => closeSidebar()}
             />
-            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <IconButton color="primary" >
-                    <BrightnessAutoRoundedIcon />
-                </IconButton>
-                <Typography >Acme Co.</Typography>
+            <Box sx={{ display: 'flex', gap: 1, alignItems: 'center', justifyContent: 'space-between' }}>
+                <Typography>My Laundry</Typography>
                 <ColorSchemeToggle />
             </Box>
-            <Input placeholder="Search" />
             <Box
                 sx={{
                     minHeight: 0,
@@ -139,24 +135,6 @@ export default function Sidebar() {
                     }}
                 >
                     <ListItem>
-                        <ListItemButton>
-                            <HomeRoundedIcon />
-                            <ListItemText>
-                                <Typography> Home</Typography>
-                            </ListItemText>
-                        </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
-                        <ListItemButton>
-                            <DashboardRoundedIcon />
-                            <ListItemText>
-                                <Typography>Dashboard</Typography>
-                            </ListItemText>
-                        </ListItemButton>
-                    </ListItem>
-
-                    <ListItem>
                         <ListItemButton selected>
                             <ShoppingCartRoundedIcon />
                             <ListItemText>
@@ -165,98 +143,33 @@ export default function Sidebar() {
                         </ListItemButton>
                     </ListItem>
 
-                    <ListItem >
-                        <Toggler
-                            renderToggle={({ open, setOpen }) => (
-                                <ListItemButton onClick={() => setOpen(!open)}>
-                                    <AssignmentRoundedIcon />
-                                    <ListItemText>
-                                        <Typography >Tasks</Typography>
-                                    </ListItemText>
-                                    <KeyboardArrowDownIcon
-                                        sx={[
-                                            open
-                                                ? {
-                                                    transform: 'rotate(180deg)',
-                                                }
-                                                : {
-                                                    transform: 'none',
-                                                },
-                                        ]}
-                                    />
-                                </ListItemButton>
-                            )}
-                        >
-                            <List sx={{ gap: 0.5 }}>
-                                <ListItem sx={{ mt: 0.5 }}>
-                                    <ListItemButton>All tasks</ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton>Backlog</ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton>In progress</ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton>Done</ListItemButton>
-                                </ListItem>
-                            </List>
-                        </Toggler>
-                    </ListItem>
                     <ListItem>
                         <ListItemButton
                             role="menuitem"
                             component="a"
                             href="/material-ui/getting-started/templates/messages/"
                         >
-                            <QuestionAnswerRoundedIcon />
                             <ListItemText>
-                                <Typography >Messages</Typography>
+                                <Typography >Customers</Typography>
                             </ListItemText>
                         </ListItemButton>
                     </ListItem>
-                    <ListItem>
-                        <Toggler
-                            renderToggle={({ open, setOpen }) => (
-                                <ListItemButton onClick={() => setOpen(!open)}>
-                                    <GroupRoundedIcon />
-                                    <ListItemText>
-                                        <Typography >Users</Typography>
-                                    </ListItemText>
-                                    <KeyboardArrowDownIcon
-                                        sx={[
-                                            open
-                                                ? {
-                                                    transform: 'rotate(180deg)',
-                                                }
-                                                : {
-                                                    transform: 'none',
-                                                },
-                                        ]}
-                                    />
-                                </ListItemButton>
-                            )}
-                        >
-                            <List sx={{ gap: 0.5 }}>
-                                <ListItem sx={{ mt: 0.5 }}>
-                                    <ListItemButton
-                                        role="menuitem"
-                                        component="a"
-                                        href="/material-ui/getting-started/templates/profile-dashboard/"
-                                    >
-                                        My profile
-                                    </ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton>Create a new user</ListItemButton>
-                                </ListItem>
-                                <ListItem>
-                                    <ListItemButton>Roles & permission</ListItemButton>
-                                </ListItem>
-                            </List>
-                        </Toggler>
+                     <ListItem>
+                        <ListItemButton>
+                            <ListItemText>
+                                <Typography>Coupons</Typography>
+                            </ListItemText>
+                        </ListItemButton>
                     </ListItem>
-                </List>
+
+                    <ListItem>
+                        <ListItemButton>
+                            <ListItemText>
+                                <Typography>Feedbacks</Typography>
+                            </ListItemText>
+                        </ListItemButton>
+                    </ListItem>           
+                        </List>
                 <List
                     sx={{
                         mt: 'auto',
