@@ -3,11 +3,10 @@ export interface Service {
     serviceId: number;
     name: string;
     category: ServiceCategory;
-    desc: string;
+    description: string;
     pricePerUnit: number;
     unitType: UnitType;
-    isActive: boolean;
-    lastUpdated: Date;
+    isAvailable: boolean;
 }
 
 export enum ServiceCategory { 

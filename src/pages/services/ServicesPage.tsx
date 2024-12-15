@@ -59,7 +59,7 @@ export default function ServicesPage() {
                 </Link>
             </Stack>            
             </Box>
-            <Box mt={'10px'}>
+            <Box mt={'10px'} height={'10vh'}>
                 {renderSection()}
             </Box>
         </Box>
