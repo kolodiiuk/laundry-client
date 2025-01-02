@@ -24,6 +24,14 @@ function createFormData(item: any) {
     return formData;
 }
 
+const Services = {
+    getAll: () => requests.get('service/all')
+    getAllAvailable:
+    create:
+    update:
+    delete:
+}
+
 const Orders = {
     getAll: () => requests.get('Order'),
     create: (order) => requests.postForm('Order', createFormData(order)),
@@ -48,6 +56,7 @@ const Statistics = {
 
 
 const agent = {
+    Services,
     Orders,
     Payments,
     Auth,
