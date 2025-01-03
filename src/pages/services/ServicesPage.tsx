@@ -23,44 +23,45 @@ export default function ServicesPage() {
     
     return (
         <Box>
-            <Box>
-            <Stack
-                sx={{
-                    width: {xs: '100%', sm: '96vw'},
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyItems: 'center',
-                    alignItems: 'center',
-                    alignContent: 'center',
-                    justifyContent: 'space-evenly',
+            {/*<Box>*/}
+            {/*<Stack*/}
+            {/*    sx={{*/}
+            {/*        width: {xs: '100%', sm: '96vw'},*/}
+            {/*        display: 'flex',*/}
+            {/*        flexDirection: 'row',*/}
+            {/*        justifyItems: 'center',*/}
+            {/*        alignItems: 'center',*/}
+            {/*        alignContent: 'center',*/}
+            {/*        justifyContent: 'space-evenly',*/}
 
-                }}   
-            >
-                <Link
-                    underline='hover'
-                    onClick={() => setSection(ServiceCategory.DryCleaning)}
-                >
-                    <Typography>Хімчистка</Typography>
-                    
-                </Link>
-                <Divider flexItem orientation="vertical" variant='fullWidth'/>
-                <Link
-                    underline="hover"
-                    onClick={() => setSection(ServiceCategory.Washing)}
-                >
-                    <Typography>Прання</Typography>
-                </Link>
-                <Divider flexItem orientation="vertical" variant='fullWidth'/>
-                <Link
-                    underline="hover"
-                    onClick={() => setSection(ServiceCategory.Ironing)}
-                >
-                    <Typography>Прасування</Typography>
-                </Link>
-            </Stack>            
-            </Box>
+            {/*    }}   */}
+            {/*>*/}
+            {/*    <Link*/}
+            {/*        underline='hover'*/}
+            {/*        onClick={() => setSection(ServiceCategory.DryCleaning)}*/}
+            {/*    >*/}
+            {/*        <Typography>Хімчистка</Typography>*/}
+            {/*        */}
+            {/*    </Link>*/}
+            {/*    <Divider flexItem orientation="vertical" variant='fullWidth'/>*/}
+            {/*    <Link*/}
+            {/*        underline="hover"*/}
+            {/*        onClick={() => setSection(ServiceCategory.Washing)}*/}
+            {/*    >*/}
+            {/*        <Typography>Прання</Typography>*/}
+            {/*    </Link>*/}
+            {/*    <Divider flexItem orientation="vertical" variant='fullWidth'/>*/}
+            {/*    <Link*/}
+            {/*        underline="hover"*/}
+            {/*        onClick={() => setSection(ServiceCategory.Ironing)}*/}
+            {/*    >*/}
+            {/*        <Typography>Прасування</Typography>*/}
+            {/*    </Link>*/}
+            {/*</Stack>            */}
+            {/*</Box>*/}
             <Box mt={'10px'} height={'10vh'}>
-                {renderSection()}
+                {/*{renderSection()}*/}
+                <Washing/>
             </Box>
         </Box>
     )

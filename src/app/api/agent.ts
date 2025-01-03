@@ -25,7 +25,7 @@ function createFormData(item: any) {
 }
 
 const Services = {
-    getAll: () => requests.get('service/all')
+    getAll: () => requests.get('service/all'),
     getAllAvailable:
     create:
     update:
