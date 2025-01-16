@@ -1,20 +1,22 @@
-export interface BasketState {
+import { createSlice } from "@reduxjs/toolkit/react";
+import { User } from "../../models/User";
 
-  basketItems: BasketItem[];
+export interface AuthState {
+  isAuthenticated: boolean;
+  user: User | null;
   error: string | null;
   loading: boolean;
 }
 
-const initialState: BasketState = {
-
-  basketItems: [],
+const initialState: AuthState = {
+  isAuthenticated: false,
+  user: null,
   error: null,
   loading: false
 }
 
-export const basketSlice = createSlice({
-
-  name: 'basket',
+export const authSlice : any = createSlice({
+  name: 'auth',
   initialState,
   reducers: {},
   extraReducers: (builder) => {

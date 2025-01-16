@@ -132,7 +132,6 @@ function SideDrawer(
           height: '100%',
           p: 2,
           boxShadow: 'lg',
-          // bgcolor: 'background.surface',
         }}
       >
         {other.children}

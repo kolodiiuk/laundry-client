@@ -8,32 +8,27 @@ import MainPage from "../pages/main/MainPage.tsx";
 
 export default function App() {
     const location = useLocation();
+    const path = location.pathname;
+
+    const isSpecialPage = 
+        path.startsWith('/admin') || 
+        path.startsWith('/profile') || 
+        path === '/login' || 
+        path === '/register';
 
     return (
-        <>
-            <ThemeProvider theme={theme}>
-                <CssBaseline/>
-                <Layout.Root>
-                    {
-                        (location.pathname !== '/login' && location.pathname !== '/register') &&
-                        (
-                            <Layout.Header>
-                                <Header/>
-                            </Layout.Header>
-                        )
-                    }
-
-                    {location.pathname === '/' ? (
-                        <Layout.Main>
-                            <MainPage/>
-                        </Layout.Main>
-                    ) : (
-                        <Layout.Main>
-                            <Outlet/>
-                        </Layout.Main>
-                    )}
-                </Layout.Root>
-            </ThemeProvider>
-        </>
+        <ThemeProvider theme={theme}>
+            <CssBaseline/>
+            <Layout.Root>
+                {!isSpecialPage && (
+                    <Layout.Header>
+                        <Header/>
+                    </Layout.Header>
+                )}
+                <Layout.Main>
+                    {path === '/' ? <MainPage/> : <Outlet/>}
+                </Layout.Main>
+            </Layout.Root>
+        </ThemeProvider>
     );
 }

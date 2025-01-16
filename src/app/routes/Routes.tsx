@@ -6,30 +6,42 @@ import RegisterPage from "../../pages/login/RegisterPage.tsx";
 import ServicesPage from "../../pages/services/ServicesPage.tsx";
 import MainPage from "../../pages/main/MainPage.tsx";
 import BasketPage from '../../pages/basket/BasketPage.tsx';
+import AdminServices from "../../pages/admin/AdminServices";
+import AdminOrders from "../../pages/admin/AdminOrders";
+import AdminStats from "../../pages/admin/AdminStatistics";
+import AdminCoupons from "../../pages/admin/AdminCoupons";
+import CustomerProfile from "../../pages/auth-user/CustomerProfile";
+import CustomerOrders from "../../pages/auth-user/CustomerOrders";
 
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <App/>,
     children: [
-      // {
-      //     element: <RequireAuth />, children: [
-      //         { path: '/orders', element: < /> },
-      //     ]
-      // },
-      // {
-      //     element: <RequireAuth roles={['Admin']} />, children: [
-      //         { path: '/orders', element: < /> },
-      //     ]
-      // },
-      {path: '/about', element: <AboutPage/>},
-      {path: '/services', element: <ServicesPage/>},
-      {path: '/login', element: <LoginPage/>},
-      {path: '/register', element: <RegisterPage/>},
-      {path: '/custprofile', element: <></>},
-      {path: '/adminprofile', element: <></>},  // consider adding separate routes for each page whatever
-      {path: '/basket', element: <BasketPage/>},
-      {path: '*', element: <MainPage/>},
+      {path: 'main', element: <AboutPage/>},
+      {path: 'services', element: <ServicesPage/>},
+      {path: 'login', element: <LoginPage/>},
+      {path: 'register', element: <RegisterPage/>},
+      {path: 'basket', element: <BasketPage/>},
+      {
+        path: 'admin',
+        element: <App />,
+        children: [
+          {path: 'services', element: <AdminServices />},
+          {path: 'orders', element: <AdminOrders />},
+          {path: 'statistics', element: <AdminStats />},
+          {path: 'coupons', element: <AdminCoupons />},
+        ]
+      },
+      {
+        path: 'profile',
+        element: <App />,
+        children: [
+          {path: '', element: <CustomerProfile />},
+          {path: 'orders', element: <CustomerOrders />},
+        ]
+      },
+      {path: '', element: <MainPage/>},
     ],
   }
 ]);

@@ -40,8 +40,6 @@ export default function LoginPage() {
                     mb: '400px',
                     display: 'flex',
                     justifyContent: 'flex-end',
-                    // backdropFilter: 'blur(12px)',
-                    // backgroundColor: 'rgba(255 255 255 / 0.2)',
                 }
                 }
             >
@@ -65,7 +63,7 @@ export default function LoginPage() {
                                 alignItems: 'center'
                             }}
                         >
-                            <IconButton color="primary" href="/main">
+                            <IconButton color="primary" href="/services">
                                 <HomeRoundedIcon
                                     color="secondary"
                                 />

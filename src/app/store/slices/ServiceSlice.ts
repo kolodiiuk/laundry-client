@@ -50,7 +50,6 @@ export const createService = createAsyncThunk(
   }
 );
 
-// Async Thunk: Update an existing service
 export const updateService = createAsyncThunk(
   'services/updateService',
   async (service: Service, {rejectWithValue}) => {
@@ -64,13 +63,12 @@ export const updateService = createAsyncThunk(
   }
 );
 
-// Async Thunk: Delete a service
 export const deleteService = createAsyncThunk(
   'services/deleteService',
   async (serviceId: number, {rejectWithValue}) => {
 
     try {
-      await agent.Services.delete(serviceId); // Use the Services API utility
+      await agent.Services.delete(serviceId);
       return serviceId;
     } catch (error) {
       return rejectWithValue((error as any).message);
@@ -79,12 +77,10 @@ export const deleteService = createAsyncThunk(
 );
 
 export const serviceSlice = createSlice({
-
   name: 'services',
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // Handle fetchAllServices lifecycle
     builder.addCase(fetchAllServices.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -99,7 +95,6 @@ export const serviceSlice = createSlice({
       state.error = action.error.message || 'Failed to fetch services';
     });
 
-    // Handle fetchAllAvailableServices lifecycle
     builder.addCase(fetchAllAvailableServices.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -114,22 +109,20 @@ export const serviceSlice = createSlice({
       state.error = action.error.message || 'Failed to fetch available services';
     });
 
-    // Handle createService lifecycle
     builder.addCase(createService.pending, (state) => {
       state.loading = true;
       state.error = null;
     });
     builder.addCase(createService.fulfilled, (state, action) => {
       state.loading = false;
-      state.services.push(action.payload); // Add the new service
-      state.filteredServices = state.services; // Update filteredServices
+      state.services.push(action.payload); 
+      state.filteredServices = state.services;
     });
     builder.addCase(createService.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload as string;
     });
 
-    // Handle updateService lifecycle
     builder.addCase(updateService.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -140,8 +133,8 @@ export const serviceSlice = createSlice({
         (service) => service.serviceId === action.payload.serviceId
       );
       if (index !== -1) {
-        state.services[index] = action.payload; // Update the service
-        state.filteredServices = state.services; // Update filteredServices
+        state.services[index] = action.payload;
+        state.filteredServices = state.services; 
       }
     });
     builder.addCase(updateService.rejected, (state, action) => {
@@ -149,7 +142,6 @@ export const serviceSlice = createSlice({
       state.error = action.payload as string;
     });
 
-    // Handle deleteService lifecycle
     builder.addCase(deleteService.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -159,7 +151,7 @@ export const serviceSlice = createSlice({
       state.services = state.services.filter(
         (service) => service.serviceId !== action.payload
       );
-      state.filteredServices = state.services; // Update filteredServices
+      state.filteredServices = state.services;
     });
     builder.addCase(deleteService.rejected, (state, action) => {
       state.loading = false;

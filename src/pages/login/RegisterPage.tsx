@@ -65,7 +65,7 @@ export default function RegisterPage() {
                                 alignItems: 'center'
                             }}
                         >
-                            <IconButton color="primary" href="/main">
+                            <IconButton color="primary" href="/services">
                                 <HomeRoundedIcon
                                     color="secondary"
                                 />

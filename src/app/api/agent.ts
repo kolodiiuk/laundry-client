@@ -34,7 +34,6 @@ const Auth = {
 const Basket = {
   get: (userId: number) => requests.get(`basket/${userId}`),
   create: (basket: any) => requests.post('basket', createFormData(basket)),
-  // update: (basket: any) => requests.put('basket', createFormData(basket)),
   updateQuantity: (updateQuantityDto: any) => requests.putForm('basket/quantity', createFormData(updateQuantityDto)),
   delete: (id: number) => requests.delete(`basket/${id}`)
 };

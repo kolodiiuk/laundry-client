@@ -1,4 +1,3 @@
-// import * as React from 'react';
 import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -9,8 +8,6 @@ import Tooltip from "@mui/material/Tooltip";
 import {Typography} from '@mui/material';
 
 export default function Header() {
-  // const [open, setOpen] = React.useState(false);
-
   return (
     <Box sx={{display: 'flex', flexGrow: 1, justifyContent: 'space-between', borderBottom: "1px solid"}}>
       <Box sx={{display: {xs: 'none', sm: 'flex'}, flexDirection: 'row', alignItems: 'center'}}>
@@ -35,23 +32,12 @@ export default function Header() {
           alignSelf: 'center'
         }}
       >
-        <Button
-          href={"/main"}
-          sx={{alignSelf: 'center'}}
-        >
-          Головна
-        </Button>
+
         <Button
           href={"/services"}
           sx={{alignSelf: 'center'}}
         >
-          Послуги
-        </Button>
-        <Button
-          href={"/about"}
-          sx={{alignSelf: 'center'}}
-        >
-          Про нас
+          Services
         </Button>
       </Stack>
       <Box sx={{display: {xs: 'inline-flex', sm: 'none'}}}>
