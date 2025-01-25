@@ -4,17 +4,17 @@ import Header from '../app/layout/Header.tsx';
 import {ThemeProvider} from "@mui/material";
 import {theme} from "../theme.ts"
 import {Outlet, useLocation} from "react-router-dom";
-import MainPage from "../pages/main/MainPage.tsx";
 
 export default function App() {
     const location = useLocation();
     const path = location.pathname;
 
     const isSpecialPage = 
-        path.startsWith('/admin') || 
-        path.startsWith('/profile') || 
-        path === '/login' || 
-        path === '/register';
+        path.startsWith('/admin') 
+        || path.startsWith('/profile') 
+        || path === '/login' 
+        || path === '/register'
+        || path.includes('/checkout');
 
     return (
         <ThemeProvider theme={theme}>
@@ -26,7 +26,7 @@ export default function App() {
                     </Layout.Header>
                 )}
                 <Layout.Main>
-                    {path === '/' ? <MainPage/> : <Outlet/>}
+                    <Outlet />
                 </Layout.Main>
             </Layout.Root>
         </ThemeProvider>

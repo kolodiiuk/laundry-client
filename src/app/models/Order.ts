@@ -1,5 +1,5 @@
 export interface Order {
-
+  id: number;
   status: OrderStatus;
   subtotal: number;
   description: string;
@@ -17,19 +17,19 @@ export interface Order {
   created: Date;
 }
 
-//todo: add order status
 export enum OrderStatus {
-
+  Created,
+  Approved,
+  Collected,
+  Delivered,
 }
 
 export enum PaymentMethod {
-
   Cash,
   CreditCard,
 }
 
 export enum PaymentStatus {
-
   NotPaid,
   Paid,
 }

@@ -1,4 +1,5 @@
 import axios, {AxiosResponse} from "axios";
+import { CreateBasketItemDto, UpdateQuantityDto } from "../models/BasketItem";
 
 axios.defaults.baseURL = 'http://localhost:5064/api/';
 const responseBody = (response: AxiosResponse) => response.data;
@@ -27,14 +28,17 @@ function createFormData(item: any) {
 const Auth = {
   login: (credentials: any) => requests.post('auth/login', credentials),
   register: (user: any) => requests.post('auth/register', user),
-  getAll: () => requests.get('auth/all'),
-  getById: (id: number) => requests.get(`auth/${id}`)
+  // getAll: () => requests.get('auth/all'),
+  // getById: (id: number) => requests.get(`auth/${id}`)
 };
 
 const Basket = {
   get: (userId: number) => requests.get(`basket/${userId}`),
-  create: (basket: any) => requests.post('basket', createFormData(basket)),
-  updateQuantity: (updateQuantityDto: any) => requests.putForm('basket/quantity', createFormData(updateQuantityDto)),
+  create: (basketItem: CreateBasketItemDto) => {
+    // Make sure to return the result:
+    return requests.postForm('basket', createFormData(basketItem));
+  },
+  updateQuantity: (updateDto: UpdateQuantityDto) => requests.putForm('basket/quantity', createFormData(updateDto)),
   delete: (id: number) => requests.delete(`basket/${id}`)
 };
 
@@ -60,16 +64,22 @@ const Payments = {
 };
 
 const Reports = {
-  cheque: () => requests.get('reports/cheque'),
-  priceList: () => requests.get('reports/price_list')
+  cheque: () => axios.get('reports/cheque', {responseType: 'blob'}),
+  priceList: () => axios.get('reports/price_list', { responseType: 'blob' }),
 };
 
 const Services = {
   getAll: () => requests.get('service/all'),
   getAllAvailable: () => requests.get('service/available'),
   getById: (id: number) => requests.get(`service/${id}`),
-  create: (service: any) => requests.post('service', createFormData(service)),
-  update: (service: any) => requests.put('service', createFormData(service)),
+  create: (service: any) => requests.postForm(`service`, createFormData(service)),
+  // create: (service: any) => {
+  //   fetch('http://localhost:5064/api/service', { method: 'POST', body: createFormData(service) })
+  //     .then(response => response.json())
+  //     .then(data => console.log('Success:', data))
+  //     .catch(error => console.error('Error:', error));
+  // },
+  update: (service: any) => requests.putForm('service', createFormData(service)),
   delete: (id: number) => requests.delete(`service/${id}`)
 }
 
@@ -92,4 +102,3 @@ const agent = {
 };
 
 export default agent;
-    

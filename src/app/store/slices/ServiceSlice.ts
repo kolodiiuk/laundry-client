@@ -3,7 +3,6 @@ import agent from "../../api/agent";
 import {createAsyncThunk, createSlice} from "@reduxjs/toolkit";
 
 export interface ServiceState {
-
   services: Service[];
   filteredServices: Service[];
   error: string | null;
@@ -11,7 +10,6 @@ export interface ServiceState {
 }
 
 const initialState: ServiceState = {
-
   services: [],
   filteredServices: [],
   loading: false,
@@ -21,13 +19,12 @@ const initialState: ServiceState = {
 export const fetchAllServices = createAsyncThunk(
   'services/fetchAllServices',
   async () => {
-
     const response = await agent.Services.getAll();
     return response;
   }
 );
 
-export const fetchAllAvailableServices = createAsyncThunk<Service[]>(
+export const fetchAllAvailableServices = createAsyncThunk(
   'services/fetchAllAvailableServices',
   async () => {
 
@@ -38,11 +35,14 @@ export const fetchAllAvailableServices = createAsyncThunk<Service[]>(
 
 export const createService = createAsyncThunk(
   'services/createService',
-  async (service: Omit<Service, 'serviceId'>, {rejectWithValue}) => {
+  async (service: Omit<Service, 'id'>, {rejectWithValue}) => {
 
     try {
-
+      console.log("from slice")
+      console.log(service);
       const response = await agent.Services.create(service);
+      console.log(`from slice`);
+      console.log(service);
       return response;
     } catch (error) {
       return rejectWithValue((error as any).message);
@@ -52,7 +52,7 @@ export const createService = createAsyncThunk(
 
 export const updateService = createAsyncThunk(
   'services/updateService',
-  async (service: Service, {rejectWithValue}) => {
+  async (service: any, {rejectWithValue}) => {
     try {
 
       const response = await agent.Services.update(service);
@@ -88,7 +88,7 @@ export const serviceSlice = createSlice({
     builder.addCase(fetchAllServices.fulfilled, (state, action) => {
       state.loading = false;
       state.services = action.payload;
-      state.filteredServices = action.payload;
+      state.filteredServices = action.payload;  // Restored
     });
     builder.addCase(fetchAllServices.rejected, (state, action) => {
       state.loading = false;
@@ -102,7 +102,7 @@ export const serviceSlice = createSlice({
     builder.addCase(fetchAllAvailableServices.fulfilled, (state, action) => {
       state.loading = false;
       state.services = action.payload;
-      state.filteredServices = action.payload;
+      state.filteredServices = action.payload;  // Restored
     });
     builder.addCase(fetchAllAvailableServices.rejected, (state, action) => {
       state.loading = false;
@@ -116,7 +116,7 @@ export const serviceSlice = createSlice({
     builder.addCase(createService.fulfilled, (state, action) => {
       state.loading = false;
       state.services.push(action.payload); 
-      state.filteredServices = state.services;
+      state.filteredServices = state.services;  // Restored
     });
     builder.addCase(createService.rejected, (state, action) => {
       state.loading = false;
@@ -130,11 +130,11 @@ export const serviceSlice = createSlice({
     builder.addCase(updateService.fulfilled, (state, action) => {
       state.loading = false;
       const index = state.services.findIndex(
-        (service) => service.serviceId === action.payload.serviceId
+        (service) => service.id === action.payload.id  // Changed from serviceId
       );
       if (index !== -1) {
         state.services[index] = action.payload;
-        state.filteredServices = state.services; 
+        state.filteredServices = state.services;  // Restored
       }
     });
     builder.addCase(updateService.rejected, (state, action) => {
@@ -149,7 +149,7 @@ export const serviceSlice = createSlice({
     builder.addCase(deleteService.fulfilled, (state, action) => {
       state.loading = false;
       state.services = state.services.filter(
-        (service) => service.serviceId !== action.payload
+        (service) => service.id !== action.payload
       );
       state.filteredServices = state.services;
     });
@@ -157,8 +157,7 @@ export const serviceSlice = createSlice({
       state.loading = false;
       state.error = action.payload as string;
     });
-  }
-})
+  }})
 
 export const serviceActions = serviceSlice.actions;
 export default serviceSlice.reducer;

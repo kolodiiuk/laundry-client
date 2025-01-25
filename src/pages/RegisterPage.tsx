@@ -4,29 +4,36 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import ColorSchemeToggle from "../../components/common/ColorSchemeToggle.tsx";
+import ColorSchemeToggle from "../components/common/ColorSchemeToggle.tsx";
 import {Button, Card, Link, TextField} from "@mui/material";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
+import { useAppDispatch, useAppSelector } from "../app/store/configureStore.ts";
+import { register } from "../app/store/slices/AuthSlice";
 
 interface FormElements extends HTMLFormControlsCollection {
+    firstName: HTMLInputElement;
+    lastName: HTMLInputElement;
     email: HTMLInputElement;
+    phoneNumber: HTMLInputElement;
     password: HTMLInputElement;
-    persistent: HTMLInputElement;
 }
 
-interface SignInFormElement extends HTMLFormElement {
+interface SignUpFormElement extends HTMLFormElement {
     readonly elements: FormElements;
 }
 
-export default function LoginPage() {
+export default function RegisterPage() {
+    const dispatch = useAppDispatch();
+    // const { loading, error } = useAppSelector(state => state.auth);
+
     return (
         <>
             <GlobalStyles
                 styles={{
                     ':root': {
                         '--Form-maxWidth': '800px',
-                        '--Transition-duration': '0.1s', // set to `none` to disable transition
+                        '--Transition-duration': '0.1s',
                     },
                 }}
             />
@@ -100,64 +107,92 @@ export default function LoginPage() {
                         <Stack sx={{gap: 4, mb: 2}}>
                             <Stack sx={{gap: 1, display: 'flex', alignItems: 'center'}}>
                                 <Typography component="h1" variant={"h5"} sx={{}}>
-                                    Sign in
+                                    Sign up
                                 </Typography>
                             </Stack>
                         </Stack>
 
                         <Stack sx={{gap: 4, mt: 2}}>
                             <form
-                                onSubmit={(event: React.FormEvent<SignInFormElement>) => {
+                                onSubmit={(event: React.FormEvent<SignUpFormElement>) => {
                                     event.preventDefault();
                                     const formElements = event.currentTarget.elements;
                                     const data = {
+                                        firstName: formElements.firstName.value,
+                                        lastName: formElements.lastName.value,
                                         email: formElements.email.value,
+                                        phoneNumber: formElements.phoneNumber.value,
                                         password: formElements.password.value,
-                                        // persistent: formElements.persistent.checked,
                                     };
-                                    alert(JSON.stringify(data, null, 2));
+                                    dispatch(register(data));
                                 }}
                             >
-                                <FormControl required>
-                                    <FormLabel>Email</FormLabel>
-                                    <TextField
-                                        // error={emailError}
-                                        // helperText={emailErrorMessage}
-                                        id="email"
-                                        type="email"
-                                        name="email"
-                                        placeholder="your@email.com"
-                                        autoComplete="email"
-                                        autoFocus
-                                        required
-                                        fullWidth
-                                        variant="outlined"
-                                        // color={emailError ? 'error' : 'primary'}
-                                        sx={{ariaLabel: 'email'}}
-                                    />
-                                </FormControl>
-                                <FormControl required>
-                                    <FormLabel>Password</FormLabel>
-                                    <TextField
-                                        // error={passwordError}
-                                        // helperText={passwordErrorMessage}
-                                        name="password"
-                                        placeholder="••••••"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="current-password"
-                                        required
-                                        fullWidth
-                                        variant="outlined"
-                                        // color={passwordError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
+                        <FormControl required>
+                            <FormLabel>First Name</FormLabel>
+                            <TextField
+                                autoComplete="given-name"
+                                name="firstName"
+                                id="firstName"
+                                required
+                                fullWidth
+                            />
+                        </FormControl>
+                        <FormControl required>
+                            <FormLabel>Last Name</FormLabel>
+                            <TextField
+                                autoComplete="family-name"
+                                name="lastName"
+                                id="lastName"
+                                required
+                                fullWidth
+                            />
+                        </FormControl>
+                        <FormControl required>
+                            <FormLabel>Email</FormLabel>
+                            <TextField
+                                id="email"
+                                type="email"
+                                name="email"
+                                placeholder=""
+                                autoComplete="email"
+                                autoFocus
+                                required
+                                fullWidth
+                                variant="outlined"
+                                sx={{ariaLabel: 'email'}}
+                            />
+                        </FormControl>
+                        <FormControl required>
+                            <FormLabel>Phone Number</FormLabel>
+                            <TextField
+                                id="phoneNumber"
+                                type="text"
+                                name="phoneNumber"
+                                placeholder=""
+                                required
+                                fullWidth
+                                variant="outlined"
+                            />
+                        </FormControl>
+                        <FormControl required>
+                            <FormLabel>Password</FormLabel>
+                            <TextField
+                                name="password"
+                                placeholder=""
+                                type="password"
+                                id="password"
+                                autoComplete="current-password"
+                                required
+                                fullWidth
+                                variant="outlined"
+                            /> 
+                        </FormControl>
                                 <Box display="flex" justifyContent="space-between">
                                     <Typography component="p" variant="body1">
-                                        Don't have an account?
+                                        Already have an account?
                                     </Typography>
-                                    <Link href="/register">
-                                        Sign up
+                                    <Link href="/login">
+                                        Sign in
                                     </Link>
                                 </Box>
                                 <Stack sx={{gap: 4, mt: 2}}>
@@ -169,14 +204,14 @@ export default function LoginPage() {
                                         }}
                                     >
                                     </Box>
-
                                     <Button
                                         type="submit"
                                         fullWidth
                                         variant='outlined'
+                                        color='primary'
                                         sx={{borderColor: 'lightgrey'}}
                                     >
-                                        Sign in
+                                        Sign up
                                     </Button>
                                 </Stack>
                             </form>

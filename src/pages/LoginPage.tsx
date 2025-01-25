@@ -4,22 +4,26 @@ import Typography from "@mui/material/Typography";
 import Stack from "@mui/material/Stack";
 import IconButton from "@mui/material/IconButton";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import ColorSchemeToggle from "../../components/common/ColorSchemeToggle.tsx";
+import ColorSchemeToggle from "../components/common/ColorSchemeToggle.tsx";
 import {Button, Card, Link, TextField} from "@mui/material";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
+import { login } from "../app/store/slices/AuthSlice";
+import { useAppDispatch, useAppSelector } from "../app/store/configureStore.ts";
 
 interface FormElements extends HTMLFormControlsCollection {
     email: HTMLInputElement;
     password: HTMLInputElement;
-    persistent: HTMLInputElement;
 }
 
 interface SignInFormElement extends HTMLFormElement {
     readonly elements: FormElements;
 }
 
-export default function RegisterPage() {
+export default function LoginPage() {
+    const dispatch = useAppDispatch();
+    const { loading, error } = useAppSelector(state => state.auth);
+
     return (
         <>
             <GlobalStyles
@@ -40,8 +44,6 @@ export default function RegisterPage() {
                     mb: '400px',
                     display: 'flex',
                     justifyContent: 'flex-end',
-                    // backdropFilter: 'blur(12px)',
-                    // backgroundColor: 'rgba(255 255 255 / 0.2)',
                 }
                 }
             >
@@ -102,7 +104,7 @@ export default function RegisterPage() {
                         <Stack sx={{gap: 4, mb: 2}}>
                             <Stack sx={{gap: 1, display: 'flex', alignItems: 'center'}}>
                                 <Typography component="h1" variant={"h5"} sx={{}}>
-                                    Sign up
+                                    Sign in
                                 </Typography>
                             </Stack>
                         </Stack>
@@ -111,81 +113,44 @@ export default function RegisterPage() {
                             <form
                                 onSubmit={(event: React.FormEvent<SignInFormElement>) => {
                                     event.preventDefault();
-                                    const formElements = event.currentTarget.elements;
-                                    const data = {
-                                        email: formElements.email.value,
-                                        password: formElements.password.value,
-                                        // persistent: formElements.persistent.checked,
-                                    };
-                                    alert(JSON.stringify(data, null, 2));
+                                    const { email, password } = event.currentTarget.elements;
+                                    dispatch(login({ email: email.value, password: password.value }));
                                 }}
                             >
                                 <FormControl required>
-                                    <FormLabel>First name</FormLabel>
-                                    <TextField
-                                        autoComplete="name"
-                                        name="name"
-                                        required
-                                        fullWidth
-                                        id="name"
-                                        placeholder="Jon Snow"
-                                        //   error={nameError}
-                                        //   helperText={nameErrorMessage}
-                                        //   color={nameError ? 'error' : 'primary'}
-                                    /> </FormControl>
-                                <FormControl required>
-                                    <FormLabel>Last name</FormLabel>
-                                    <TextField
-                                        autoComplete="name"
-                                        name="name"
-                                        required
-                                        fullWidth
-                                        id="name"
-                                        placeholder="Jon Snow"
-                                        //   error={nameError}
-                                        //   helperText={nameErrorMessage}
-                                        //   color={nameError ? 'error' : 'primary'}
-                                    />
-                                </FormControl>
-                                <FormControl required>
                                     <FormLabel>Email</FormLabel>
                                     <TextField
-                                        // error={emailError}
-                                        // helperText={emailErrorMessage}
                                         id="email"
                                         type="email"
                                         name="email"
-                                        placeholder="your@email.com"
+                                        placeholder=""
                                         autoComplete="email"
                                         autoFocus
                                         required
                                         fullWidth
                                         variant="outlined"
-                                        // color={emailError ? 'error' : 'primary'}
                                         sx={{ariaLabel: 'email'}}
                                     />
                                 </FormControl>
                                 <FormControl required>
                                     <FormLabel>Password</FormLabel>
                                     <TextField
-                                        // error={passwordError}
-                                        // helperText={passwordErrorMessage}
                                         name="password"
-                                        placeholder="••••••"
+                                        placeholder=""
                                         type="password"
                                         id="password"
                                         autoComplete="current-password"
                                         required
                                         fullWidth
                                         variant="outlined"
-                                        // color={passwordError ? 'error' : 'primary'}
-                                    /> </FormControl>
+                                    />
+                                </FormControl>
                                 <Box display="flex" justifyContent="space-between">
                                     <Typography component="p" variant="body1">
-                                        Already have an account?
+                                        Don't have an account?
                                     </Typography>
-                                    <Link href="/login">
-                                        Sign in
+                                    <Link href="/register">
+                                        Sign up
                                     </Link>
                                 </Box>
                                 <Stack sx={{gap: 4, mt: 2}}>
@@ -197,20 +162,19 @@ export default function RegisterPage() {
                                         }}
                                     >
                                     </Box>
+
                                     <Button
                                         type="submit"
                                         fullWidth
                                         variant='outlined'
-                                        color='primary'
                                         sx={{borderColor: 'lightgrey'}}
                                     >
-                                        Sign up
+                                        Sign in
                                     </Button>
                                 </Stack>
                             </form>
                         </Stack>
                     </Card>
-
                 </Box>
             </Box>
         </>

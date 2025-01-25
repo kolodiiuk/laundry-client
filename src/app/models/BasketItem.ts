@@ -1,7 +1,17 @@
 export interface BasketItem {
-
-  total: number;
-  quantity: number;
+  id: number;
   serviceId: number;
   userId: number;
+  quantity: number;
+}
+
+export interface CreateBasketItemDto {
+  serviceId: number;
+  userId: number;
+  quantity: number;
+}
+
+export interface UpdateQuantityDto {
+  basketItemId: number;
+  newValue: number;
 }

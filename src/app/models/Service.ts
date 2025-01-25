@@ -1,6 +1,5 @@
 export interface Service {
-
-    serviceId: number;
+    id: number;
     name: string;
     category: ServiceCategory;
     description: string;
@@ -9,8 +8,7 @@ export interface Service {
     isAvailable: boolean;
 }
 
-export enum ServiceCategory { 
-
+export enum ServiceCategory {
     Washing, 
     DryCleaning, 
     Ironing, 
@@ -18,7 +16,6 @@ export enum ServiceCategory {
 }
 
 export enum UnitType { 
-
     Piece, 
     Kg, 
     SquareMeters, 

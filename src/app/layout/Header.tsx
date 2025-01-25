@@ -2,12 +2,31 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import {LocalLaundryServiceSharp, LoginSharp, MenuRounded, ShoppingCart} from "@mui/icons-material";
+import {LocalLaundryServiceSharp, LoginSharp, LogoutSharp, MenuRounded, ShoppingCart} from "@mui/icons-material";
 import ColorSchemeToggle from "../../components/common/ColorSchemeToggle.tsx";
 import Tooltip from "@mui/material/Tooltip";
 import {Typography} from '@mui/material';
+import { useAppDispatch, useAppSelector } from '../store/configureStore.ts';
+import { logout } from '../store/slices/AuthSlice.ts';
+import BasketDialog from "../../components/basket/BasketDialog";
+import { useState } from 'react';
+import { calculateBasketTotal, getBasket } from '../store/slices/BasketSlice.ts';
 
 export default function Header() {
+  const dispatch = useAppDispatch();
+  const {user, isAuthenticated} = useAppSelector(state => state.auth)
+  const [basketOpen, setBasketOpen] = useState(false);
+  const handleLogout = () => {
+    dispatch(logout());
+  }
+  const openBasketDialog = () => {
+    setBasketOpen(true);
+    if (isAuthenticated) {
+      dispatch(getBasket(user?.id ?? 0));
+      dispatch(calculateBasketTotal())
+    }
+  }
+
   return (
     <Box sx={{display: 'flex', flexGrow: 1, justifyContent: 'space-between', borderBottom: "1px solid"}}>
       <Box sx={{display: {xs: 'none', sm: 'flex'}, flexDirection: 'row', alignItems: 'center'}}>
@@ -56,7 +75,7 @@ export default function Header() {
         <Tooltip title={"Basket"}>
           <IconButton
             color={"secondary"}
-            // href={"/basket"}
+            onClick={openBasketDialog}
           >
             <ShoppingCart/>
           </IconButton>
@@ -71,7 +90,20 @@ export default function Header() {
             <LoginSharp/>
           </IconButton>
         </Tooltip>
-      </Box>
+        <IconButton
+          color='secondary'
+          onClick={handleLogout}
+        >
+          <LogoutSharp/>
+        </IconButton>
+        </Box>
+        <BasketDialog
+          open={basketOpen}
+          onClose={() => {
+        
+            setBasketOpen(false)}
+          }
+        />
     </Box>
   );
 }
