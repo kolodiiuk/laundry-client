@@ -1,16 +1,16 @@
 import { Box } from "@mui/material";
-import Sidebar from "../../components/common/Sidebar";
 import { Outlet } from "react-router-dom";
+import Sidebar from "../../components/common/Sidebar";
 
-export default function AdminLayout() {
+export default function CustomerLayout() {
     return (
         <Box sx={{ display: 'flex' }}>
-            <Sidebar variant="admin" />
+            <Sidebar variant="customer" />
             <Box 
                 sx={{ 
                     flexGrow: 1, 
                     p: 1, 
-                    width: '95vw', 
+                    width: '95vw',
                     boxSizing: 'border-box',
                 }}
             >

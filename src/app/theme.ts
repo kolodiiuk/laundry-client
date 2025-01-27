@@ -12,16 +12,13 @@ export const theme = createTheme({
         },
     },
     components: {
-        // Example: Adjusting Ag-Grid theme based on breakpoints
         MuiAgGridReact: {
             styleOverrides: {
                 root: {
-                    // Ensure Ag-Grid occupies full width on all screen sizes
                     width: '100%',
                     height: '100%',
                 },
             },
         },
     },
-    // Customize other theme properties as needed
 });

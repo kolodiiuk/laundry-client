@@ -11,6 +11,7 @@ import RegisterPage from '../../pages/RegisterPage.tsx';
 import ServicesPage from '../../pages/ServicesPage.tsx';
 import AdminLayout from "../../pages/admin/AdminLayout";
 import Checkout from '../../pages/Checkout.tsx';
+import CustomerLayout from '../../pages/auth-user/CustomerLayout.tsx';
 
 export const router = createBrowserRouter([
   {
@@ -33,7 +34,7 @@ export const router = createBrowserRouter([
       },
       {
         path: 'profile',
-        element: <AdminLayout />,
+        element: <CustomerLayout />,
         children: [
           {path: '', element: <CustomerProfile />},
           {path: 'orders', element: <CustomerOrders />},

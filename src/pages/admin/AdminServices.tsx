@@ -10,7 +10,6 @@ export default function AdminServices() {
     const gridRef = useRef<any>();
     const dispatch = useAppDispatch();
     const { services, loading, error } = useAppSelector(state => state.services);
-    console.log(services);
     useEffect(() => {
         void dispatch(fetchAllServices());
     }, [dispatch]);
@@ -111,20 +110,18 @@ export default function AdminServices() {
             const newValue = params.newValue;
             const field = params.colDef.field;
             
-            // Create a new object with the updated value
             const updatedData = { 
                 ...params.data,
                 [field]: newValue 
             };
             
-            // Update the row data
             params.node.setData(updatedData);
             return true;
         }
     }), []);
 
     const createNewService = (): Service => ({  
-        id: -10,// Removed serviceId
+        id: -10,
         name: '',
         category: ServiceCategory.Washing,
         description: '',
@@ -136,13 +133,11 @@ export default function AdminServices() {
     const handleAdd = () => {
         const newService = createNewService();
         if (gridRef.current) {
-            // Add new row and start editing
             gridRef.current.api.applyTransaction({
                 add: [newService],
                 addIndex: 0
             });
             
-            // Start editing the new row
             gridRef.current.api.startEditingCell({
                 rowIndex: 0,
                 colKey: 'name'
@@ -158,9 +153,7 @@ export default function AdminServices() {
     const onRowEditingStopped = useCallback((event: any) => {
         const data = event.data;
         
-        // If this is a newly added row (has negative id)
         if (data.id < 0) {
-            // Remove temporary id for creation
             const { id, ...serviceToCreate } = data;
             console.log(serviceToCreate);
             dispatch(createService(serviceToCreate));
@@ -221,7 +214,7 @@ export default function AdminServices() {
                         stopEditingWhenCellsLoseFocus={true}
                         stopEditingWhenGridLosesFocus={false}
                         suppressRowTransform={true}
-                        singleClickEdit={true}  // Enable single click editing
+                        singleClickEdit={true} 
                     />                
                 </div>            
             </Box>

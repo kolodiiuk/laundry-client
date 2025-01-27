@@ -3,17 +3,27 @@ import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
 import { Box, useColorScheme } from "@mui/material";
 import { AgGridReact } from "ag-grid-react";
 import { OrderStatus, PaymentMethod, PaymentStatus } from "../../app/models/Order";
+import { format } from 'date-fns';
+import { fetchAllOrders, updateOrder } from "../../app/store/slices/OrdersSlice";
+import { fetchAllAddresses, fetchAllUsers } from "../../app/store/slices/AuthSlice";
+import AddressCellRenderer from "../../components/common/AddressCellRenderer";
+import UserCellRenderer from "../../components/common/UserCellRenderer";
 
 export default function AdminOrders() {
     const gridRef = useRef<any>();
     const dispatch = useAppDispatch();
-    const { orders, loading, error } = useAppSelector(state => state.orders);
-    console.log(orders);
+    const { allOrders, loading: ordersLoading, error } = useAppSelector(state => state.orders);
+    const { allAddresses, loading: authLoading} = useAppSelector(state => state.auth);
+    console.log(allOrders);
     useEffect(() => {
-        void dispatch();
+        Promise.all([
+            dispatch(fetchAllOrders()),
+            dispatch(fetchAllUsers()), 
+            dispatch(fetchAllAddresses())
+        ]);
+        console.log("loaded" );
     }, [dispatch]);
 
-    // mappers
     const getOrderStatusDisplayValues = () => {
         return Object.keys(OrderStatus)
             .filter(k => isNaN(Number(k)))
@@ -39,55 +49,198 @@ export default function AdminOrders() {
             }));
     };
 
+    const dateFormatter = (params: any) => {
+        return params.value ? format(new Date(params.value), 'dd/MM/yyyy HH:mm') : '';
+    };
+
     const [columnDefs] = useState([
-        { field: 'orderId' },
-        { field: 'name', headerName: 'Name', editable: true },
-        //done(?)
         { 
-            field: 'orderStatus', 
+            field: 'id',
+            headerName: 'Order ID',
+            editable: false,
+            filter: 'agNumberColumnFilter',
+            filterParams: {
+                buttons: ['reset', 'apply'],
+                closeOnApply: true
+            }
+        },
+        { 
+            field: 'status',
             headerName: 'Order Status',
             editable: true,
+            filter: 'agSetColumnFilter',
             cellEditor: 'agSelectCellEditor',
             cellEditorParams: {
                 values: getOrderStatusDisplayValues().map(v => v.label)
             },
-            valueGetter: (params: any) => {
-                return OrderStatus[params.data.orderStatus];
-            },
+            valueGetter: (params: any) => OrderStatus[params.data.status],
             valueSetter: (params: any) => {
                 const value = OrderStatus[params.newValue as keyof typeof OrderStatus];
-                params.data.orderStatus = value;
+                const updatedData = {
+                    ...params.data,
+                    status: value
+                };
+                params.node.setData(updatedData);
                 return true;
             }
         },
-        { field: 'description', headerName: 'Description' },
-        { field: 'pricePerUnit', headerName: 'Price', filter: 'agNumberColumnFilter', editable: true },
+        {
+            field: 'subtotal',
+            headerName: 'Subtotal',
+            editable: false,
+            filter: 'agNumberColumnFilter',
+            valueFormatter: (params: any) => `${params.value} грн`,
+            filterParams: {
+                buttons: ['reset', 'apply'],
+                closeOnApply: true
+            }
+        },
         { 
-            field: 'unitType', 
-            headerName: 'Unit', 
+            field: 'description', 
+            headerName: 'Description', 
+            editable: false 
+        },
+        { 
+            field: 'paymentMethod',
+            headerName: 'Payment Method',
+            editable: false,
+            filter: 'agSetColumnFilter',
+            valueGetter: (params: any) => PaymentMethod[params.data.paymentMethod],
+            filterParams: {
+                values: getPaymentMethodDisplayValues().map(v => v.label)
+            }
+        },
+        { 
+            field: 'paymentStatus',
+            headerName: 'Payment Status',
             editable: true,
+            filter: 'agSetColumnFilter',
             cellEditor: 'agSelectCellEditor',
             cellEditorParams: {
-                values: getUnitTypeDisplayValues().map(v => v.label)
+                values: getPaymentStatusDisplayValues().map(v => v.label)
             },
-            valueGetter: (params: any) => {
-                return UnitType[params.data.unitType];
+            valueGetter: (params: any) => PaymentStatus[params.data.paymentStatus],
+            valueSetter: (params: any) => {
+                const value = PaymentStatus[params.newValue as keyof typeof PaymentStatus];
+                const updatedData = {
+                    ...params.data,
+                    paymentStatus: value
+                };
+                params.node.setData(updatedData);
+                return true;
+            }
+        },
+        { 
+            field: 'hasCoupon',
+            headerName: 'Has Coupon',
+            editable: false,
+            filter: 'agSetColumnFilter',
+            valueFormatter: (params: any) => params.value ? 'Yes' : 'No'
+        },
+        { 
+            field: 'discount',
+            headerName: 'Discount',
+            editable: false,
+            filter: 'agNumberColumnFilter',
+            valueFormatter: (params: any) => `${params.value} грн`
+        },
+        { 
+            field: 'deliveryFee',
+            headerName: 'Delivery Fee',
+            editable: false,
+            filter: 'agNumberColumnFilter',
+            valueFormatter: (params: any) => `${params.value} грн`
+        },
+        { 
+            field: 'couponId', 
+            headerName: 'Coupon', 
+            filter: 'agNumberColumnFilter', 
+            editable: false
+        },
+        {
+            field: 'collectedDate',
+            headerName: 'Collected Date',
+            editable: true,
+            filter: 'agDateColumnFilter',
+            valueFormatter: dateFormatter,
+            filterParams: {
+                buttons: ['reset', 'apply'],
+                closeOnApply: true,
+                comparator: (filterValue: Date, cellValue: string) => {
+                    const cellDate = new Date(cellValue);
+                    if (cellDate < filterValue) return -1;
+                    if (cellDate > filterValue) return 1;
+                    return 0;
+                }
             },
             valueSetter: (params: any) => {
-                const value = UnitType[params.newValue as keyof typeof UnitType];
-                params.data.unitType = value;
+                const updatedData = {
+                    ...params.data,
+                    collectedDate: params.newValue
+                };
+                params.node.setData(updatedData);
                 return true;
             }
         },
-        { 
-            field: 'isAvailable', 
-            headerName: 'Available',
+        {
+            field: 'deliveredDate',
+            headerName: 'Delivered Date',
             editable: true,
-            cellEditor: 'agSelectCellEditor',
-            cellEditorParams: {
-                values: [true, false]
+            filter: 'agDateColumnFilter',
+            valueFormatter: dateFormatter,
+            filterParams: {
+                buttons: ['reset', 'apply'],
+                closeOnApply: true,
+                comparator: (filterValue: Date, cellValue: string) => {
+                    const cellDate = new Date(cellValue);
+                    if (cellDate < filterValue) return -1;
+                    if (cellDate > filterValue) return 1;
+                    return 0;
+                }
+            },
+            valueSetter: (params: any) => {
+                const updatedData = {
+                    ...params.data,
+                    deliveredDate: params.newValue
+                };
+                params.node.setData(updatedData);
+                return true;
             }
         },
+        {
+            field: 'userId',
+            headerName: 'Customer',
+            editable: false,
+            filter: 'agTextColumnFilter',
+            cellRenderer: UserCellRenderer,
+        },
+        {
+            field: 'addressId',
+            headerName: 'Delivery Address',
+            editable: false,
+            filter: 'agTextColumnFilter',
+            cellRenderer: AddressCellRenderer,
+            cellRendererParams: {
+                allAddresses: allAddresses
+            }
+        },
+        {
+            field: 'createdAt',
+            headerName: 'Created At',
+            editable: false,
+            filter: 'agDateColumnFilter',
+            valueFormatter: dateFormatter,
+            filterParams: {
+                buttons: ['reset', 'apply'],
+                closeOnApply: true,
+                comparator: (filterValue: Date, cellValue: string) => {
+                    const cellDate = new Date(cellValue);
+                    if (cellDate < filterValue) return -1;
+                    if (cellDate > filterValue) return 1;
+                    return 0;
+                }
+            }
+        }
     ]);
 
     const defaultColDef = useMemo(() => ({
@@ -100,13 +253,14 @@ export default function AdminOrders() {
     const onRowEditingStopped = useCallback((event: any) => {
         const data = event.data;
         console.log(data);
-        dispatch(updateOrderStatus(data));
+        dispatch(updateOrder(data));
     }, [dispatch]);
 
     const { mode } = useColorScheme();
     const themeName = (mode === 'light') ? "ag-theme-alpine" : "ag-theme-alpine-dark";
 
-    if (loading) return <div>Loading...</div>;
+    const isLoading = ordersLoading || authLoading || !allAddresses.length;
+    if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
@@ -117,7 +271,7 @@ export default function AdminOrders() {
             p: 2,
             gap: 2
         }}>
-            <Box sx={{ width: 'calc(100vw - 24vw)', height: 'calc(100vh - 150px)' }}>
+            <Box sx={{ width: 'calc(150vw)', height: 'calc(100vh - 150px)' }}>
                 <div
                     className={themeName}
                     style={{ 
@@ -127,8 +281,7 @@ export default function AdminOrders() {
                 >
                     <AgGridReact
                         ref={gridRef}
-                        rowData={orders}
-                        immutableData={true}
+                        rowData={allOrders}
                         domLayout="normal"
                         getRowId={p => p.data.id}
                         columnDefs={columnDefs}

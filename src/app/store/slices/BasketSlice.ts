@@ -2,7 +2,6 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BasketItem, CreateBasketItemDto, UpdateQuantityDto } from "../../models/BasketItem";
 import { BasketService } from "../../services/basketService";
 
-// Define the BasketState interface
 interface BasketState {
   basketItems: BasketItem[];
   totalPrice: number;
@@ -10,7 +9,6 @@ interface BasketState {
   loading: boolean;
 }
 
-// Define the initial state
 const initialState: BasketState = {
   basketItems: [],
   totalPrice: 0,
@@ -18,13 +16,12 @@ const initialState: BasketState = {
   loading: false,
 };
 
-// Thunk to calculate total price
 export const calculateBasketTotal = createAsyncThunk<number>(
   "basket/calculateTotal",
   async (_, { getState }) => {
-    const state: any = getState(); // Access the entire Redux state
-    const basketItems = state.basket.basketItems; // Get basket items from the basket slice
-    const filteredServices = state.services.filteredServices; // Get filtered services from the service slice
+    const state: any = getState(); 
+    const basketItems = state.basket.basketItems; 
+    const filteredServices = state.services.filteredServices;
 
     const total = basketItems.reduce((sum: number, item: BasketItem) => {
       const service = filteredServices.find((s: any) => s.id === item.serviceId);
@@ -37,7 +34,6 @@ export const calculateBasketTotal = createAsyncThunk<number>(
   }
 );
 
-// Other thunks for basket actions
 export const getBasket = createAsyncThunk<BasketItem[], number>(
   "basket/getBasket",
   async (userId, { rejectWithValue }) => {
@@ -62,7 +58,7 @@ export const addToBasket = createAsyncThunk<BasketItem, CreateBasketItemDto>(
 
 export const updateQuantity = createAsyncThunk<BasketItem, UpdateQuantityDto>(
   "basket/updateQuantity",
-  async (updateDto, { dispatch, rejectWithValue }) => {
+  async (updateDto, {rejectWithValue }) => {
     try {
       const result = await BasketService.updateQuantity(updateDto);
       return result;
@@ -84,7 +80,6 @@ export const removeFromBasket = createAsyncThunk<number, number>(
   }
 );
 
-// Create the basket slice
 export const basketSlice = createSlice({
   name: "basket",
   initialState,
@@ -114,7 +109,7 @@ export const basketSlice = createSlice({
       state.error = null;
     });
     builder.addCase(addToBasket.fulfilled, (state, action) => {
-      state.basketItems.push(action.payload);
+      state.basketItems = [...state.basketItems, action.payload];
       state.loading = false;
     });
     builder.addCase(addToBasket.rejected, (state, action) => {
@@ -127,10 +122,9 @@ export const basketSlice = createSlice({
       state.error = null;
     });
     builder.addCase(updateQuantity.fulfilled, (state, action) => {
-      const index = state.basketItems.findIndex((item) => item.id === action.payload.id);
-      if (index !== -1) {
-        state.basketItems[index] = action.payload;
-      }
+      state.basketItems = state.basketItems.map(item =>
+        item.id === action.payload.id ? action.payload : item
+      );
       state.loading = false;
     });
     builder.addCase(updateQuantity.rejected, (state, action) => {
@@ -155,7 +149,7 @@ export const basketSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(calculateBasketTotal.fulfilled, (state, action) => {
-      state.totalPrice = action.payload; // Set the total price
+      state.totalPrice = action.payload;
       state.loading = false;
     });
     builder.addCase(calculateBasketTotal.rejected, (state, action) => {
@@ -165,6 +159,5 @@ export const basketSlice = createSlice({
   },
 });
 
-// Export actions and reducer
 export const { clearBasket } = basketSlice.actions;
 export default basketSlice.reducer;

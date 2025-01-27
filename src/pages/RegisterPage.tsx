@@ -8,7 +8,7 @@ import ColorSchemeToggle from "../components/common/ColorSchemeToggle.tsx";
 import {Button, Card, Link, TextField} from "@mui/material";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
-import { useAppDispatch, useAppSelector } from "../app/store/configureStore.ts";
+import { useAppDispatch } from "../app/store/configureStore.ts";
 import { register } from "../app/store/slices/AuthSlice";
 
 interface FormElements extends HTMLFormControlsCollection {
@@ -25,7 +25,6 @@ interface SignUpFormElement extends HTMLFormElement {
 
 export default function RegisterPage() {
     const dispatch = useAppDispatch();
-    // const { loading, error } = useAppSelector(state => state.auth);
 
     return (
         <>

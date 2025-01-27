@@ -6,20 +6,26 @@ import { Address } from "../app/models/Address";
 import { useDispatch } from "react-redux";
 import { getBasket } from "../app/store/slices/BasketSlice";
 import { fetchAllAvailableServices } from "../app/store/slices/ServiceSlice";
+import { createOrder } from "../app/store/slices/OrdersSlice";
+import { useNavigate } from "react-router-dom";
+import { clearBasket } from "../app/store/slices/BasketSlice";
+import { CreateOrderDto, PaymentMethod } from "../app/models/Order";
+import { fetchUserAddresses } from "../app/store/slices/AuthSlice";
 
-const DELIVERY_FEE = 50; // UAH
+const DELIVERY_FEE = 50;
 
 export default function Checkout() {
     const dispatch = useDispatch<AppDispatch>();
+    const navigate = useNavigate();
     const [selectedAddress, setSelectedAddress] = useState<number>(0);
     const [description, setDescription] = useState('');
     
     const { basketItems, loading, error } = useAppSelector(state => state.basket);
-    const { user } = useAppSelector(state => state.auth);
+    const { user, addresses } = useAppSelector(state => state.auth);
     const { filteredServices } = useAppSelector(state => state.services);
 
     const formatAddress = (address: Address) => {
-        return `${address.city}, ${address.district}, ${address.street}, ${address.house}, кв. ${address.apartment}`;
+        return `${address.city}, ${address.district}, ${address.street}, ${address.house}, кв. ${address.apartments}`;
     };
 
     const subtotal = useMemo(() => 
@@ -31,15 +37,14 @@ export default function Checkout() {
     );
 
     useEffect(() => {
-        // Load both basket and services
         if (user?.id) {
             dispatch(getBasket(user.id));
             dispatch(fetchAllAvailableServices());
+            dispatch(fetchUserAddresses())
         }
         console.log("Initial load - User:", user?.id, "Services:", filteredServices.length, "Basket:", basketItems.length);
     }, [dispatch, user?.id]);
 
-    // Wait for both basket and services to be loaded
     if (loading || !filteredServices.length) return (
         <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh">
             <CircularProgress />
@@ -47,15 +52,35 @@ export default function Checkout() {
     );
 
     const total = subtotal + DELIVERY_FEE;
+console.log(addresses);
 
-    const handleSubmit = () => {
-        // TODO: Implement order submission
-        console.log({
-            items: basketItems,
+    const handleSubmit = async () => {
+        if (!user || !selectedAddress) return;
+
+        const orderItems = basketItems.map(item => ({
+            serviceId: item.serviceId,
+            quantity: item.quantity
+        }));
+
+        console.log('Order items being sent:', orderItems);
+
+        const orderDto: CreateOrderDto = {
+            userId: user.id,
             addressId: selectedAddress,
-            description,
-            total
-        });
+            description: description || '',
+            paymentMethod: PaymentMethod.Cash,
+            deliveryFee: DELIVERY_FEE,
+            hasCoupon: false,
+            orderItems
+        };
+
+        try {
+            await dispatch(createOrder(orderDto));
+            dispatch(clearBasket());
+            navigate('/profile/orders');
+        } catch (error) {
+            console.error('Failed to place order:', error);
+        }
     };
 
     if (error) return (
@@ -111,19 +136,22 @@ export default function Checkout() {
                     sx={{ mb: 3 }}
                 />
 
-                {/* <Select
+                <Typography>
+                    Обрати адресу доставки
+                </Typography>
+                <Select
                     fullWidth
                     value={selectedAddress}
                     onChange={(e) => setSelectedAddress(Number(e.target.value))}
                     sx={{ mb: 3 }}
                 >
-                    {user?.addresses?.map((address) => (
+                    {addresses.map((address) => (
                         <MenuItem key={address.id} value={address.id}>
                             {formatAddress(address)}
                         </MenuItem>
                     ))}
                     
-                </Select> */}
+                </Select>
 
                 <Box sx={{ 
                     mb: 3,
@@ -148,7 +176,7 @@ export default function Checkout() {
                     fullWidth 
                     size="large"
                     onClick={handleSubmit}
-                    // disabled={!selectedAddress}
+                    disabled={!selectedAddress}
                     sx={{ py: 1.5 }}
                 >
                     Підтвердити замовлення

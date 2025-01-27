@@ -1,6 +1,6 @@
 export interface Address {
   id: number;
-  apartment: string;
+  apartments: string;
   house: string;
   street: string;
   district: string;

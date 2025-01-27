@@ -1,5 +1,6 @@
 import axios, {AxiosResponse} from "axios";
 import { CreateBasketItemDto, UpdateQuantityDto } from "../models/BasketItem";
+import { CreateOrderDto } from "../models/Order";
 
 axios.defaults.baseURL = 'http://localhost:5064/api/';
 const responseBody = (response: AxiosResponse) => response.data;
@@ -20,7 +21,16 @@ const requests = {
 function createFormData(item: any) {
   const formData = new FormData();
   for (const key in item) {
-    formData.append(key, item[key])
+    if (Array.isArray(item[key])) {
+      // Handle arrays by appending each item with indexed key
+      item[key].forEach((element: any, index: number) => {
+        for (const subKey in element) {
+          formData.append(`${key}[${index}].${subKey}`, element[subKey]);
+        }
+      });
+    } else {
+      formData.append(key, item[key]);
+    }
   }
   return formData;
 }
@@ -28,14 +38,17 @@ function createFormData(item: any) {
 const Auth = {
   login: (credentials: any) => requests.post('auth/login', credentials),
   register: (user: any) => requests.post('auth/register', user),
-  // getAll: () => requests.get('auth/all'),
-  // getById: (id: number) => requests.get(`auth/${id}`)
+  getAllUsers: () => requests.get('auth'),
+  getAllAddresses: () => requests.get('address/all'),
+  getAddresses: (userId: number) => requests.get(`address/user/${userId}`),
+  createAddress: (address: any) => requests.post('address', createFormData(address)),
+  updateAddress: (address: any) => requests.put('address', createFormData(address)),
+  deleteAddress: (id: number) => requests.delete(`address/${id}`)
 };
 
 const Basket = {
   get: (userId: number) => requests.get(`basket/${userId}`),
   create: (basketItem: CreateBasketItemDto) => {
-    // Make sure to return the result:
     return requests.postForm('basket', createFormData(basketItem));
   },
   updateQuantity: (updateDto: UpdateQuantityDto) => requests.putForm('basket/quantity', createFormData(updateDto)),
@@ -54,9 +67,18 @@ const Orders = {
   getAll: () => requests.get('order/all'),
   getByUser: (userId: number) => requests.get(`order/user/${userId}`),
   getById: (id: number) => requests.get(`order/${id}`),
-  create: (order: any) => requests.post('order', createFormData(order)),
-  update: (order: any) => requests.put('order', createFormData(order)),
-  updateStatus: (orderId: number) => requests.put(`order/status/${orderId}`, {})
+  create: (orderDto: CreateOrderDto) => {
+    console.log('Creating order with items:', orderDto.orderItems);
+    return requests.postForm('order', createFormData(orderDto));
+  },
+  update: (order: any) => {
+    const orderData = {
+        ...order,
+        collectedDate: order.collectedDate ? new Date(order.collectedDate).toISOString() : null,
+        deliveredDate: order.deliveredDate ? new Date(order.deliveredDate).toISOString() : null
+    };
+    return requests.put('order', orderData);
+  },
 };
 
 const Payments = {
@@ -73,12 +95,6 @@ const Services = {
   getAllAvailable: () => requests.get('service/available'),
   getById: (id: number) => requests.get(`service/${id}`),
   create: (service: any) => requests.postForm(`service`, createFormData(service)),
-  // create: (service: any) => {
-  //   fetch('http://localhost:5064/api/service', { method: 'POST', body: createFormData(service) })
-  //     .then(response => response.json())
-  //     .then(data => console.log('Success:', data))
-  //     .catch(error => console.error('Error:', error));
-  // },
   update: (service: any) => requests.putForm('service', createFormData(service)),
   delete: (id: number) => requests.delete(`service/${id}`)
 }

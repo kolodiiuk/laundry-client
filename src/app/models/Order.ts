@@ -14,7 +14,7 @@ export interface Order {
   deliveredDate: Date;
   userId: number;
   addressId: number;
-  created: Date;
+  createdAt: Date;
 }
 
 export enum OrderStatus {
@@ -32,4 +32,20 @@ export enum PaymentMethod {
 export enum PaymentStatus {
   NotPaid,
   Paid,
+}
+
+export interface CreateOrderDto {
+    userId: number;
+    addressId: number;
+    description: string;
+    paymentMethod: PaymentMethod;
+    deliveryFee: number;
+    hasCoupon: boolean;
+    couponId?: number;
+    orderItems: CreateOrderItemDto[];
+}
+
+export interface CreateOrderItemDto {
+    serviceId: number;
+    quantity: number;
 }

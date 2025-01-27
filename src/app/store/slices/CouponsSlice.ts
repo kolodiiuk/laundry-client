@@ -17,7 +17,7 @@ export const couponsSlice = createSlice({
   name: 'coupons',
   initialState,
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: () => {
 
   }
 });

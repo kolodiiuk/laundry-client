@@ -2,7 +2,7 @@ import Box from '@mui/material/Box';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
-import {LocalLaundryServiceSharp, LoginSharp, LogoutSharp, MenuRounded, ShoppingCart} from "@mui/icons-material";
+import {LocalLaundryServiceSharp, LoginSharp, LogoutSharp, MenuRounded, Person, ShoppingCart} from "@mui/icons-material";
 import ColorSchemeToggle from "../../components/common/ColorSchemeToggle.tsx";
 import Tooltip from "@mui/material/Tooltip";
 import {Typography} from '@mui/material';
@@ -11,6 +11,7 @@ import { logout } from '../store/slices/AuthSlice.ts';
 import BasketDialog from "../../components/basket/BasketDialog";
 import { useState } from 'react';
 import { calculateBasketTotal, getBasket } from '../store/slices/BasketSlice.ts';
+import { Role } from '../models/User.ts';
 
 export default function Header() {
   const dispatch = useAppDispatch();
@@ -28,12 +29,19 @@ export default function Header() {
   }
 
   return (
-    <Box sx={{display: 'flex', flexGrow: 1, justifyContent: 'space-between', borderBottom: "1px solid"}}>
-      <Box sx={{display: {xs: 'none', sm: 'flex'}, flexDirection: 'row', alignItems: 'center'}}>
+    <Box sx={{
+      display: 'flex', 
+      flexGrow: 1, 
+      justifyContent: 'space-between', 
+      borderBottom: "1px solid"
+      }}>
+      <Box sx={{
+        display: {xs: 'none', sm: 'flex'}, 
+        flexDirection: 'row', 
+        alignItems: 'center'}}>
         <LocalLaundryServiceSharp
           color={"secondary"}
           sx={{
-
             display: {xs: 'none', sm: 'flex'},
             minHeight: "64px",
             fontSize: "34px"
@@ -81,6 +89,15 @@ export default function Header() {
           </IconButton>
         </Tooltip>
         <ColorSchemeToggle/>
+        <IconButton
+          href={isAuthenticated 
+            ? (user?.role === Role.Admin ? '/admin/orders' : '/profile')
+            : '/'}
+          color='secondary'
+          sx={{maxWidth: '32px', maxHeight: '32px'}}
+        >
+          <Person/>
+        </IconButton>
         <Tooltip title={"Log in/Register"}>
           <IconButton
             href={"/login"}
@@ -100,7 +117,6 @@ export default function Header() {
         <BasketDialog
           open={basketOpen}
           onClose={() => {
-        
             setBasketOpen(false)}
           }
         />

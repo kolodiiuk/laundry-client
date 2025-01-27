@@ -9,7 +9,7 @@ import {Button, Card, Link, TextField} from "@mui/material";
 import FormLabel from "@mui/material/FormLabel";
 import FormControl from "@mui/material/FormControl";
 import { login } from "../app/store/slices/AuthSlice";
-import { useAppDispatch, useAppSelector } from "../app/store/configureStore.ts";
+import { useAppDispatch } from "../app/store/configureStore.ts";
 
 interface FormElements extends HTMLFormControlsCollection {
     email: HTMLInputElement;
@@ -22,7 +22,6 @@ interface SignInFormElement extends HTMLFormElement {
 
 export default function LoginPage() {
     const dispatch = useAppDispatch();
-    const { loading, error } = useAppSelector(state => state.auth);
 
     return (
         <>
@@ -30,7 +29,7 @@ export default function LoginPage() {
                 styles={{
                     ':root': {
                         '--Form-maxWidth': '800px',
-                        '--Transition-duration': '0.1s', // set to `none` to disable transition
+                        '--Transition-duration': '0.1s',
                     },
                 }}
             />

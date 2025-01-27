@@ -121,8 +121,6 @@ function SideDrawer(
         sx={{
           position: 'absolute',
           inset: 0,
-          // bgcolor: (theme) =>
-          //     `rgba(${theme.vars.palette.neutral.darkChannel} / 0.8)`,
         }}
       />
       <Paper

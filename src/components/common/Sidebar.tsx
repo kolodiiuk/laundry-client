@@ -1,14 +1,11 @@
 import GlobalStyles from '@mui/material/GlobalStyles';
 import Box from '@mui/material/Box';
-import Divider from '@mui/material/Divider';
-import IconButton from '@mui/material/IconButton';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton, {listItemButtonClasses} from '@mui/material/ListItemButton';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import ColorSchemeToggle from './ColorSchemeToggle.tsx';
 import {closeSidebar} from '../../utils.ts';
 import { useNavigate } from 'react-router-dom';
@@ -29,8 +26,7 @@ export default function Sidebar({ variant = 'customer' }: SidebarProps) {
 
     const customerItems = [
         { text: 'Orders', path: '/profile/orders' },
-        { text: 'Coupons', path: '/profile/coupons' },
-        { text: 'Settings', path: '/profile/settings' },
+        { text: 'Profile', path: '/profile' },
     ];
 
     const items = variant === 'admin' ? adminItems : customerItems;
@@ -44,7 +40,7 @@ export default function Sidebar({ variant = 'customer' }: SidebarProps) {
                 zIndex: 10000,
                 minHeight: '95dvh',
                 height: '100%',
-                width: 'var(--Sidebar-width)', // Ensure this doesn't constrain layout if Sidebar is omitted
+                width: 'var(--Sidebar-width)',
                 top: 0,
                 p: 2,
                 flexShrink: 0,
@@ -118,16 +114,6 @@ export default function Sidebar({ variant = 'customer' }: SidebarProps) {
                     ))}
                 </List>
             </Box>
-            {/* <Divider/> */}
-            {/* <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                <Box sx={{ minWidth: 0, flex: 1 }}>
-                    <Typography>Siriwat K.</Typography>
-                    <Typography>siriwatk@test.com</Typography>
-                </Box>
-                <IconButton>
-                    <LogoutRoundedIcon/>
-                </IconButton>
-            </Box> */}
         </Paper>
     );
 }

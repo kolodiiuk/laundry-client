@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import BasketEntry from "./BasketEntry";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { calculateBasketTotal, getBasket, removeFromBasket, updateQuantity } from "../../app/store/slices/BasketSlice";
+import { calculateBasketTotal, removeFromBasket, updateQuantity } from "../../app/store/slices/BasketSlice";
 import { useEffect } from "react";
 
 interface Props {
@@ -22,7 +22,6 @@ const BasketDialog = ({ open, onClose }: Props) => {
   const { basketItems, totalPrice } = useAppSelector(state => state.basket);
   const { filteredServices } = useAppSelector(state => state.services);
 
-  // Calculate total when dialog opens or basket items change
   useEffect(() => {
     if (open && filteredServices.length > 0) {
       dispatch(calculateBasketTotal());

@@ -1,4 +1,3 @@
-// import type {CustomCellRendererProps} from "@ag-grid-community/react";
 import {type FunctionComponent} from "react";
 import Button from "@mui/material/Button";
 import { useAppDispatch, useAppSelector } from "../app/store/configureStore";
@@ -22,9 +21,6 @@ export const AddToBasketCellRenderer: FunctionComponent<CustomCellRendererProps>
         newValue: existingItem.quantity + 1 
       }));
     } else {
-      // console.log(data.id);
-      // console.log(user.id);
-      // console.log(data.id);
       dispatch(addToBasket({
         serviceId: data.id,
         userId: user.id,

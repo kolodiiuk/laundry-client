@@ -26,7 +26,7 @@ export default function ServicesPage() {
         }
     }, [dispatch]);
 
-    const [columnDefs, setColumnDefs] = useState([
+    const [columnDefs] = useState([
         { 
             field: 'name', 
             headerName: 'Name',            

@@ -88,7 +88,7 @@ export const serviceSlice = createSlice({
     builder.addCase(fetchAllServices.fulfilled, (state, action) => {
       state.loading = false;
       state.services = action.payload;
-      state.filteredServices = action.payload;  // Restored
+      state.filteredServices = action.payload;
     });
     builder.addCase(fetchAllServices.rejected, (state, action) => {
       state.loading = false;
@@ -102,7 +102,7 @@ export const serviceSlice = createSlice({
     builder.addCase(fetchAllAvailableServices.fulfilled, (state, action) => {
       state.loading = false;
       state.services = action.payload;
-      state.filteredServices = action.payload;  // Restored
+      state.filteredServices = action.payload;
     });
     builder.addCase(fetchAllAvailableServices.rejected, (state, action) => {
       state.loading = false;
@@ -116,7 +116,7 @@ export const serviceSlice = createSlice({
     builder.addCase(createService.fulfilled, (state, action) => {
       state.loading = false;
       state.services.push(action.payload); 
-      state.filteredServices = state.services;  // Restored
+      state.filteredServices = state.services;
     });
     builder.addCase(createService.rejected, (state, action) => {
       state.loading = false;
@@ -130,11 +130,11 @@ export const serviceSlice = createSlice({
     builder.addCase(updateService.fulfilled, (state, action) => {
       state.loading = false;
       const index = state.services.findIndex(
-        (service) => service.id === action.payload.id  // Changed from serviceId
+        (service) => service.id === action.payload.id
       );
       if (index !== -1) {
         state.services[index] = action.payload;
-        state.filteredServices = state.services;  // Restored
+        state.filteredServices = state.services; 
       }
     });
     builder.addCase(updateService.rejected, (state, action) => {
