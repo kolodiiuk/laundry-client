@@ -1,4 +1,4 @@
-import {Button, useColorScheme, Box} from "@mui/material";
+import {Button, useColorScheme, Box, CircularProgress} from "@mui/material";
 import {AgGridReact} from "ag-grid-react";
 import {useRef, useEffect, useState, useMemo, useCallback} from "react";
 import {useAppDispatch, useAppSelector} from "../../app/store/configureStore";
@@ -79,7 +79,6 @@ export default function CustomerProfile() {
   };
 
   const handleDelete = (id: number) => {
-    console.log(id);
     void dispatch(deleteAddress(id));
   };
 
@@ -88,10 +87,8 @@ export default function CustomerProfile() {
 
     if (data.id < 0) {
       const {id, ...addressToCreate} = data;
-      console.log("newly created address:", addressToCreate);
       dispatch(createAddress(addressToCreate));
     } else {
-      console.log(data);
       dispatch(updateAddress(data));
     }
   }, [dispatch]);
@@ -99,9 +96,12 @@ export default function CustomerProfile() {
   const {mode} = useColorScheme();
   const themeName = (mode === 'light') ? "ag-theme-alpine" : "ag-theme-alpine-dark";
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
-
+  if (loading) {
+        return <CircularProgress/>;
+  }
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
   return (
     <Box sx={{
       display: 'flex',

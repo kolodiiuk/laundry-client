@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { BasketItem, CreateBasketItemDto, UpdateQuantityDto } from "../../models/BasketItem";
 import { BasketService } from "../../services/basketService";
 
@@ -26,7 +26,6 @@ export const calculateBasketTotal = createAsyncThunk<number>(
     const total = basketItems.reduce((sum: number, item: BasketItem) => {
       const service = filteredServices.find((s: any) => s.id === item.serviceId);
       const price = service?.pricePerUnit ?? 0;
-      console.log(price);
       return sum + price * item.quantity;
     }, 0);
 
@@ -58,11 +57,19 @@ export const addToBasket = createAsyncThunk<BasketItem, CreateBasketItemDto>(
 
 export const updateQuantity = createAsyncThunk<BasketItem, UpdateQuantityDto>(
   "basket/updateQuantity",
-  async (updateDto, {rejectWithValue }) => {
+  async (updateDto, { dispatch, getState, rejectWithValue }) => {
+    const { basket } = getState() as { basket: BasketState };
+    const originalItems = [...basket.basketItems];
+
     try {
+      dispatch(basketSlice.actions.updateQuantityOptimistic(updateDto));
+      dispatch(calculateBasketTotal());
+
       const result = await BasketService.updateQuantity(updateDto);
       return result;
     } catch (error: any) {
+      dispatch(basketSlice.actions.setBasketItems(originalItems));
+      dispatch(calculateBasketTotal());
       return rejectWithValue(error.message);
     }
   }
@@ -89,13 +96,23 @@ export const basketSlice = createSlice({
       state.totalPrice = 0;
       state.error = null;
     },
+    updateQuantityOptimistic: (state, action: PayloadAction<UpdateQuantityDto>) => {
+      const { basketItemId, newValue } = action.payload;
+      const item = state.basketItems.find(item => item.id === basketItemId);
+      if (item) {
+        item.quantity = newValue;
+      }
+    },
+    setBasketItems: (state, action: PayloadAction<BasketItem[]>) => {
+      state.basketItems = action.payload;
+    }
   },
   extraReducers: (builder) => {
     builder.addCase(getBasket.pending, (state) => {
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(getBasket.fulfilled, (state, action) => {
+    builder.addCase(getBasket.fulfilled, (state, action: PayloadAction<BasketItem[]>) => {
       state.basketItems = action.payload;
       state.loading = false;
     });
@@ -159,5 +176,5 @@ export const basketSlice = createSlice({
   },
 });
 
-export const { clearBasket } = basketSlice.actions;
+export const { clearBasket, updateQuantityOptimistic, setBasketItems } = basketSlice.actions;
 export default basketSlice.reducer;

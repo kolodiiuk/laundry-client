@@ -1,27 +1,27 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
-import { Box, useColorScheme } from "@mui/material";
+import { Box, Button, CircularProgress, useColorScheme } from "@mui/material";
 import { AgGridReact } from "ag-grid-react";
-import { OrderStatus, PaymentMethod, PaymentStatus } from "../../app/models/Order";
+import { Order, OrderStatus, PaymentMethod, PaymentStatus } from "../../app/models/Order";
 import { format } from 'date-fns';
-import { fetchAllOrders, updateOrder } from "../../app/store/slices/OrdersSlice";
+import { fetchAllOrders, fetchOrderItems, updateOrder } from "../../app/store/slices/OrdersSlice";
 import { fetchAllAddresses, fetchAllUsers } from "../../app/store/slices/AuthSlice";
-import AddressCellRenderer from "../../components/common/AddressCellRenderer";
-import UserCellRenderer from "../../components/common/UserCellRenderer";
+import AddressCellRenderer from "../../components/common/cell-renderers/AddressCellRenderer.tsx";
+import UserCellRenderer from "../../components/common/cell-renderers/UserCellRenderer.tsx";
+import OrderDetailsDialog from "../../components/orders/OrderDetailsDialog";
+import { fetchAllServices } from "../../app/store/slices/ServiceSlice";
 
 export default function AdminOrders() {
     const gridRef = useRef<any>();
     const dispatch = useAppDispatch();
     const { allOrders, loading: ordersLoading, error } = useAppSelector(state => state.orders);
     const { allAddresses, loading: authLoading} = useAppSelector(state => state.auth);
-    console.log(allOrders);
     useEffect(() => {
         Promise.all([
             dispatch(fetchAllOrders()),
             dispatch(fetchAllUsers()), 
             dispatch(fetchAllAddresses())
         ]);
-        console.log("loaded" );
     }, [dispatch]);
 
     const getOrderStatusDisplayValues = () => {
@@ -52,6 +52,17 @@ export default function AdminOrders() {
     const dateFormatter = (params: any) => {
         return params.value ? format(new Date(params.value), 'dd/MM/yyyy HH:mm') : '';
     };
+
+    const handleOrderDetailsRequest = (orderId: number): void => {
+        if (orderId < 1) {
+            console.error(`Invalid orderId: ${orderId}`);
+            return;
+        }
+        dispatch(fetchOrderItems(orderId));
+        dispatch(fetchAllServices());
+        const selectedOrder = allOrders.find(order => order.id === orderId) || null;
+        setSelectedOrder(selectedOrder);
+    }
 
     const [columnDefs] = useState([
         { 
@@ -240,6 +251,25 @@ export default function AdminOrders() {
                     return 0;
                 }
             }
+        },
+        {
+            headerName: 'Details',
+            cellRenderer: (params: any) => {
+                return (
+                    <Button
+                        sx={{
+                            width: '100%',
+                            height: '100%',
+                            padding: 0,
+                            margin: 0,
+                            border: 'none'
+                        }}
+                        onClick={() => handleOrderDetailsRequest(params.data.id)}
+                    >
+                        Details
+                    </Button>
+                )
+            },
         }
     ]);
 
@@ -252,16 +282,17 @@ export default function AdminOrders() {
 
     const onRowEditingStopped = useCallback((event: any) => {
         const data = event.data;
-        console.log(data);
         dispatch(updateOrder(data));
     }, [dispatch]);
 
     const { mode } = useColorScheme();
     const themeName = (mode === 'light') ? "ag-theme-alpine" : "ag-theme-alpine-dark";
+    const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
 
     const isLoading = ordersLoading || authLoading || !allAddresses.length;
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return <CircularProgress/>;
     if (error) return <div>Error: {error}</div>;
+
 
     return (
         <Box sx={{ 
@@ -294,6 +325,11 @@ export default function AdminOrders() {
                     />
                 </div>
             </Box>
+                <OrderDetailsDialog 
+                    order={selectedOrder}
+                    open={!!selectedOrder}
+                    onClose={() => setSelectedOrder(null)}
+                />
         </Box>
     );
 }

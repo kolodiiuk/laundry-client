@@ -38,11 +38,7 @@ export const createService = createAsyncThunk(
   async (service: Omit<Service, 'id'>, {rejectWithValue}) => {
 
     try {
-      console.log("from slice")
-      console.log(service);
       const response = await agent.Services.create(service);
-      console.log(`from slice`);
-      console.log(service);
       return response;
     } catch (error) {
       return rejectWithValue((error as any).message);

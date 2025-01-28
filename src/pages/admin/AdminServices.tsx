@@ -1,4 +1,4 @@
-import { useColorScheme } from "@mui/material";
+import { CircularProgress, useColorScheme } from "@mui/material";
 import { AgGridReact } from "ag-grid-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/store/configureStore";
@@ -146,7 +146,6 @@ export default function AdminServices() {
     };
 
     const handleDelete = (serviceId: number) => {
-        console.log(serviceId);
         void dispatch(deleteService(serviceId));
     };
 
@@ -155,7 +154,6 @@ export default function AdminServices() {
         
         if (data.id < 0) {
             const { id, ...serviceToCreate } = data;
-            console.log(serviceToCreate);
             dispatch(createService(serviceToCreate));
         } else {
             dispatch(updateService(data));
@@ -165,8 +163,12 @@ export default function AdminServices() {
     const { mode } = useColorScheme();
     const themeName = (mode === 'light') ? "ag-theme-alpine" : "ag-theme-alpine-dark";
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+    if (loading) {
+        return <CircularProgress/>;
+    }
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <Box sx={{ 

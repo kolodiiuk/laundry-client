@@ -1,5 +1,5 @@
 import {createBrowserRouter} from 'react-router-dom';
-import App from "../../components/App.tsx";
+import App from "../../App.tsx";
 import AdminServices from "../../pages/admin/AdminServices";
 import AdminOrders from "../../pages/admin/AdminOrders";
 import AdminStats from "../../pages/admin/AdminStatistics";

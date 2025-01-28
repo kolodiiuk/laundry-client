@@ -6,10 +6,10 @@ import "ag-grid-community/styles/ag-theme-balham.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 import { useState, useEffect } from 'react';
 import { useColorScheme } from "@mui/material/styles";
-import { AddToBasketCellRenderer } from "../components/AddToBasketCellRenderer.tsx";
+import { AddToBasketCellRenderer } from "../components/common/cell-renderers/AddToBasketCellRenderer.tsx";
 import { useAppDispatch, useAppSelector } from '../app/store/configureStore';
 import { fetchAllAvailableServices } from '../app/store/slices/ServiceSlice';
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import agent from '../app/api/agent.ts';
 import { UnitType } from '../app/models/Service.ts';
 import { calculateBasketTotal, getBasket } from '../app/store/slices/BasketSlice.ts';
@@ -83,7 +83,7 @@ export default function ServicesPage() {
         : "ag-theme-alpine-dark";
 
     if (loading) 
-        return <div>Loading...</div>;
+        return <CircularProgress/>;
     if (error) 
         return <div>Error: {error}</div>;
 

@@ -1,4 +1,4 @@
-import { useAppSelector } from "../../app/store/configureStore";
+import { useAppSelector } from "../../../app/store/configureStore.ts";
 
 interface UserCellRendererProps {
   data: any;

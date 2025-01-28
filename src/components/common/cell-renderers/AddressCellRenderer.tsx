@@ -1,5 +1,5 @@
 import React from 'react';
-import { useAppSelector } from '../../app/store/configureStore';
+import { useAppSelector } from '../../../app/store/configureStore.ts';
 
 interface AddressCellRendererProps {
   data: any;

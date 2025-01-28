@@ -1,6 +1,7 @@
 import axios, {AxiosResponse} from "axios";
 import { CreateBasketItemDto, UpdateQuantityDto } from "../models/BasketItem";
 import { CreateOrderDto } from "../models/Order";
+import { CreateCouponDto, UpdateCouponDto } from "../models/Coupon";
 
 axios.defaults.baseURL = 'http://localhost:5064/api/';
 const responseBody = (response: AxiosResponse) => response.data;
@@ -22,7 +23,6 @@ function createFormData(item: any) {
   const formData = new FormData();
   for (const key in item) {
     if (Array.isArray(item[key])) {
-      // Handle arrays by appending each item with indexed key
       item[key].forEach((element: any, index: number) => {
         for (const subKey in element) {
           formData.append(`${key}[${index}].${subKey}`, element[subKey]);
@@ -57,9 +57,22 @@ const Basket = {
 
 const Coupons = {
   getAll: () => requests.get('coupon'),
-  create: (coupon: any) => requests.post('coupon', createFormData(coupon)),
-  update: (coupon: any) => requests.put('coupon', createFormData(coupon)),
-  redeem: (code: string) => requests.post(`coupon/${code}`, {}),
+  create: (coupon: CreateCouponDto) => {
+    const data = {
+      ...coupon,
+      startDate: new Date(coupon.startDate).toISOString(),
+      endDate: new Date(coupon.endDate).toISOString(),
+    };
+    return requests.postForm('coupon', createFormData(data));
+  },
+  update: (coupon: UpdateCouponDto) => {
+    const data = {
+      ...coupon,
+      startDate: new Date(coupon.startDate).toISOString(),
+      endDate: new Date(coupon.endDate).toISOString(),
+    };
+    return requests.putForm('coupon', createFormData(data));
+  },
   delete: (couponId: number) => requests.delete(`coupon/${couponId}`)
 };
 
@@ -68,7 +81,6 @@ const Orders = {
   getByUser: (userId: number) => requests.get(`order/user/${userId}`),
   getById: (id: number) => requests.get(`order/${id}`),
   create: (orderDto: CreateOrderDto) => {
-    console.log('Creating order with items:', orderDto.orderItems);
     return requests.postForm('order', createFormData(orderDto));
   },
   update: (order: any) => {
@@ -79,6 +91,7 @@ const Orders = {
     };
     return requests.put('order', orderData);
   },
+  getOrderItems: (orderId: number) => requests.get(`order/orderItems/${orderId}`),
 };
 
 const Payments = {
@@ -86,7 +99,7 @@ const Payments = {
 };
 
 const Reports = {
-  cheque: () => axios.get('reports/cheque', {responseType: 'blob'}),
+  cheque: (orderId: number) => axios.get(`reports/cheque/${orderId}`, {responseType: 'blob'}),
   priceList: () => axios.get('reports/price_list', { responseType: 'blob' }),
 };
 

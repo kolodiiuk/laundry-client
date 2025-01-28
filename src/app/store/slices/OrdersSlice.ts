@@ -1,10 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Order, CreateOrderDto } from "../../models/Order";
 import agent from "../../api/agent";
+import { OrderItem } from "../../models/OrderItem";
 
 interface OrdersState {
-  allOrders: Order[];      // Admin view
-  userOrders: Order[];     // Customer view
+  allOrders: Order[];
+  userOrders: Order[]; 
+  orderItems: OrderItem[];
   selectedOrder: Order | null;
   loading: boolean;
   error: string | null;
@@ -13,6 +15,7 @@ interface OrdersState {
 const initialState: OrdersState = {
   allOrders: [],
   userOrders: [],
+  orderItems: [],
   selectedOrder: null,
   loading: false,
   error: null
@@ -23,7 +26,9 @@ export const fetchAllOrders = createAsyncThunk(
   async (_, { rejectWithValue }) => {
     try {
       const response = await agent.Orders.getAll();
-      if (!response) throw new Error('Orders not found');
+      if (!response) {
+        throw new Error('Orders not found');
+      }
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.title ?? error.message);
@@ -36,7 +41,22 @@ export const fetchUserOrders = createAsyncThunk(
   async (userId: number, { rejectWithValue }) => {
     try {
       const response = await agent.Orders.getByUser(userId);
-      if (!response) throw new Error('Orders not found');
+      if (!response) {
+        throw new Error('Orders not found');
+      }
+      return response;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.title ?? error.message);
+    }
+  }
+);
+
+export const fetchOrderItems = createAsyncThunk(
+  'orders/fetchItems',
+  async (orderId: number, { rejectWithValue }) => {
+    try {
+      const response = await agent.Orders.getOrderItems(orderId);
+      if (!response) throw new Error('Failed to fetch order items');
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.title ?? error.message);
@@ -49,7 +69,9 @@ export const fetchOrderById = createAsyncThunk(
   async (orderId: number, { rejectWithValue }) => {
     try {
       const response = await agent.Orders.getById(orderId);
-      if (!response) throw new Error('Order not found');
+      if (!response) {
+        throw new Error('Order not found');
+      }
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.title ?? error.message);
@@ -62,7 +84,9 @@ export const createOrder = createAsyncThunk(
   async (orderDto: CreateOrderDto, { rejectWithValue }) => {
     try {
       const response = await agent.Orders.create(orderDto);
-      if (!response) throw new Error('Failed to create order');
+      if (!response) {
+        throw new Error('Failed to create order');
+      }
       return response;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.title ?? error.message);
@@ -74,11 +98,11 @@ export const updateOrder = createAsyncThunk(
   'orders/update',
   async (order: Order, { rejectWithValue }) => {
     try {
-      // Get fresh order data after update
       await agent.Orders.update(order);
-      console.log("updated", order)
       const updatedOrder = await agent.Orders.getById(order.id);
-      console.log("updated2")
+      if (!updateOrder) {
+        throw new Error("Error updating order");
+      }
       return updatedOrder;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.title ?? error.message);
@@ -98,7 +122,6 @@ export const ordersSlice = createSlice({
     }
   },
   extraReducers: (builder) => {
-    // Fetch all orders (admin)
     builder.addCase(fetchAllOrders.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -112,7 +135,6 @@ export const ordersSlice = createSlice({
       state.error = `Failed to fetch orders: ${action.payload as string}`;
     });
 
-    // Fetch user orders
     builder.addCase(fetchUserOrders.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -126,7 +148,19 @@ export const ordersSlice = createSlice({
       state.error = `Failed to fetch user orders: ${action.payload as string}`;
     });
 
-    // Fetch single order
+    builder.addCase(fetchOrderItems.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    });
+    builder.addCase(fetchOrderItems.fulfilled, (state, action) =>{
+      state.loading = false;
+      state.orderItems = action.payload;
+    });
+    builder.addCase(fetchOrderItems.rejected, (state, action) => {
+      state.error = `Failed to fetch order items: ${action.payload as string}`;
+      state.loading = false;
+    });
+
     builder.addCase(fetchOrderById.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -140,7 +174,6 @@ export const ordersSlice = createSlice({
       state.error = `Failed to fetch order: ${action.payload as string}`;
     });
 
-    // Create order
     builder.addCase(createOrder.pending, (state) => {
       state.loading = true;
       state.error = null;
@@ -155,7 +188,6 @@ export const ordersSlice = createSlice({
       state.error = `Failed to create order: ${action.payload as string}`;
     });
 
-    // Update order
     builder.addCase(updateOrder.pending, (state) => {
       state.loading = true;
       state.error = null;

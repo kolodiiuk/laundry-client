@@ -1,6 +1,6 @@
 import { Box, Button, MenuItem, Select, TextField, Typography, CircularProgress } from "@mui/material";
 import { AppDispatch, useAppSelector } from "../app/store/configureStore";
-import OrderItemEntry from "./OrderItemEntry";
+import OrderItemEntry from "../components/basket/BasketItemEntryCheckout.tsx";
 import { useEffect, useMemo, useState } from "react";
 import { Address } from "../app/models/Address";
 import { useDispatch } from "react-redux";
@@ -42,7 +42,6 @@ export default function Checkout() {
             dispatch(fetchAllAvailableServices());
             dispatch(fetchUserAddresses())
         }
-        console.log("Initial load - User:", user?.id, "Services:", filteredServices.length, "Basket:", basketItems.length);
     }, [dispatch, user?.id]);
 
     if (loading || !filteredServices.length) return (
@@ -52,7 +51,6 @@ export default function Checkout() {
     );
 
     const total = subtotal + DELIVERY_FEE;
-console.log(addresses);
 
     const handleSubmit = async () => {
         if (!user || !selectedAddress) return;
@@ -61,8 +59,6 @@ console.log(addresses);
             serviceId: item.serviceId,
             quantity: item.quantity
         }));
-
-        console.log('Order items being sent:', orderItems);
 
         const orderDto: CreateOrderDto = {
             userId: user.id,

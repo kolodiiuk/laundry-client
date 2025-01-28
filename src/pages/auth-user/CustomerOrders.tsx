@@ -1,13 +1,16 @@
-import {useColorScheme, Box} from "@mui/material";
+import {useColorScheme, Box, CircularProgress} from "@mui/material";
 import {AgGridReact} from "ag-grid-react";
 import {useRef, useEffect, useState, useMemo} from "react";
 import {useAppDispatch, useAppSelector} from "../../app/store/configureStore";
 import {fetchUserAddresses} from "../../app/store/slices/AuthSlice";
 import { format } from "date-fns";
-import { OrderStatus, PaymentStatus, PaymentMethod } from "../../app/models/Order";
-import { fetchUserOrders } from "../../app/store/slices/OrdersSlice";
-import UserCellRenderer from "../../components/common/UserCellRenderer";
-import UserAddressCellRenderer from "../../components/common/UserAddressCellRenderer";
+import { OrderStatus, PaymentStatus, PaymentMethod, Order } from "../../app/models/Order";
+import { fetchOrderItems, fetchUserOrders } from "../../app/store/slices/OrdersSlice";
+import UserCellRenderer from "../../components/common/cell-renderers/UserCellRenderer.tsx";
+import UserAddressCellRenderer from "../../components/common/cell-renderers/UserAddressCellRenderer.tsx";
+import { RowClickedEvent } from "ag-grid-community";
+import OrderDetailsDialog from "../../components/orders/OrderDetailsDialog";
+import { fetchAllServices } from "../../app/store/slices/ServiceSlice";
 
 export default function CustomerOrders() {
   const gridRef = useRef<any>();
@@ -19,7 +22,6 @@ export default function CustomerOrders() {
           dispatch(fetchUserOrders(user ? user.id : -1)),
           dispatch(fetchUserAddresses())
       ]);
-      console.log("loaded" );
   }, [dispatch]);
 
   const getOrderStatusDisplayValues = () => {
@@ -202,13 +204,26 @@ export default function CustomerOrders() {
   const themeName = (mode === 'light') ? "ag-theme-alpine" : "ag-theme-alpine-dark";
 
   const isLoading = ordersLoading || authLoading || !addresses.length;
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+
+  if (isLoading) {
+    return <CircularProgress/>;
+  }
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+  
+  const handleOrderDetailsRequest = (event: RowClickedEvent<Order>): void => {
+    dispatch(fetchOrderItems(event.data?.id ?? -1));
+    dispatch(fetchAllServices());
+    setSelectedOrder(event.data ?? null);
+  }
 
   return (
       <Box sx={{ 
           display: 'flex',
           flexDirection: 'column',
+
           width: '100%',
           p: 2,
           gap: 2
@@ -229,9 +244,15 @@ export default function CustomerOrders() {
                       columnDefs={columnDefs}
                       defaultColDef={defaultColDef}
                       suppressRowTransform={true}
+                      onRowClicked={handleOrderDetailsRequest}
                   />
               </div>
           </Box>
+          <OrderDetailsDialog 
+              order={selectedOrder}
+              open={!!selectedOrder}
+              onClose={() => setSelectedOrder(null)}
+          />
       </Box>
   );
 }

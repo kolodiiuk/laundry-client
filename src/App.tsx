@@ -1,8 +1,8 @@
 import CssBaseline from '@mui/material/CssBaseline';
-import Layout from '../app/layout/Layout.tsx';
-import Header from '../app/layout/Header.tsx';
+import Layout from './app/layout/Layout.tsx';
+import Header from './app/layout/Header.tsx';
 import {ThemeProvider} from "@mui/material";
-import {theme} from "../theme.ts"
+import {theme} from "./theme.ts"
 import {Outlet, useLocation} from "react-router-dom";
 
 export default function App() {

@@ -1,7 +1,7 @@
 import {type FunctionComponent} from "react";
 import Button from "@mui/material/Button";
-import { useAppDispatch, useAppSelector } from "../app/store/configureStore";
-import { addToBasket, calculateBasketTotal, updateQuantity } from "../app/store/slices/BasketSlice";
+import { useAppDispatch, useAppSelector } from "../../../app/store/configureStore.ts";
+import { addToBasket, calculateBasketTotal, updateQuantity } from "../../../app/store/slices/BasketSlice.ts";
 import { CustomCellRendererProps } from "ag-grid-react";
 
 export const AddToBasketCellRenderer: FunctionComponent<CustomCellRendererProps> = ({ data }) => {
@@ -15,6 +15,8 @@ export const AddToBasketCellRenderer: FunctionComponent<CustomCellRendererProps>
 
     const existingItem = basketItems.find(item => item.serviceId === data.id);  
 
+    console.log(existingItem);
+    
     if (existingItem) {
       dispatch(updateQuantity({ 
         basketItemId: existingItem.id, 

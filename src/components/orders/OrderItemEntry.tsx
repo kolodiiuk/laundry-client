@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material";
-import { useAppSelector } from "../app/store/configureStore";
-import { BasketItem } from "../app/models/BasketItem";
+import { useAppSelector } from "../../app/store/configureStore.ts";
 import { useMemo } from "react";
 import React from "react";
+import {OrderItem} from "../../app/models/OrderItem.ts";
 
 interface Props {
-    item: BasketItem;
+    item: OrderItem;
 }
 
 function OrderItemEntry({item}: Props) {
@@ -13,7 +13,6 @@ function OrderItemEntry({item}: Props) {
 
     const service = useMemo(() => {
         const found = filteredServices.find(s => s.id === item.serviceId);
-        console.log("Finding service:", item.serviceId, "Found:", !!found, "Available services:", filteredServices.length);
         return found;
     }, [filteredServices, item.serviceId]);
 
@@ -23,7 +22,6 @@ function OrderItemEntry({item}: Props) {
     );
 
     if (!service) {
-        console.log("Service not found for item:", item);
         return null;
     }
 
