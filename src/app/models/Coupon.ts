@@ -5,10 +5,10 @@ export interface Coupon {
     startDate: Date;
     endDate: Date;
     usedCount: number;
-    serviceIds: number[]; // Added for M:M relationship
+    serviceIds: number[];
 }
 
-export interface CreateCouponDto extends Omit<Coupon, 'id' | 'usedCount'> {
+export interface CreateCouponDto extends Omit<Coupon, 'id'> {
     serviceIds: number[];
 }
 

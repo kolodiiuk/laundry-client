@@ -1,7 +1,7 @@
 import axios, {AxiosResponse} from "axios";
 import { CreateBasketItemDto, UpdateQuantityDto } from "../models/BasketItem";
 import { CreateOrderDto } from "../models/Order";
-import { CreateCouponDto, UpdateCouponDto } from "../models/Coupon";
+import { Coupon, CreateCouponDto, UpdateCouponDto } from "../models/Coupon";
 
 axios.defaults.baseURL = 'http://localhost:5064/api/';
 const responseBody = (response: AxiosResponse) => response.data;
@@ -23,11 +23,17 @@ function createFormData(item: any) {
   const formData = new FormData();
   for (const key in item) {
     if (Array.isArray(item[key])) {
-      item[key].forEach((element: any, index: number) => {
-        for (const subKey in element) {
-          formData.append(`${key}[${index}].${subKey}`, element[subKey]);
-        }
-      });
+      if (typeof item[key][0] !== 'object') {
+        item[key].forEach((val: any, idx: number) => {
+          formData.append(`${key}[${idx}]`, val.toString());
+        });
+      } else {
+        item[key].forEach((element: any, index: number) => {
+          for (const subKey in element) {
+            formData.append(`${key}[${index}].${subKey}`, element[subKey]);
+          }
+        });
+      }
     } else {
       formData.append(key, item[key]);
     }
@@ -65,12 +71,13 @@ const Coupons = {
     };
     return requests.postForm('coupon', createFormData(data));
   },
-  update: (coupon: UpdateCouponDto) => {
+  update: (coupon: Coupon) => {
     const data = {
       ...coupon,
       startDate: new Date(coupon.startDate).toISOString(),
       endDate: new Date(coupon.endDate).toISOString(),
     };
+    console.log("from agent", coupon.serviceIds);
     return requests.putForm('coupon', createFormData(data));
   },
   delete: (couponId: number) => requests.delete(`coupon/${couponId}`)

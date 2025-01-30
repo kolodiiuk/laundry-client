@@ -91,7 +91,8 @@ export default function AdminCoupons() {
             );
         },
         valueFormatter: (params: any) => {
-            if (!params.value?.length) return '0 services';
+            if (!params.value?.length) 
+              return '0 services';
             return `${params.value.length} services`;
         }
       }
@@ -162,11 +163,15 @@ export default function AdminCoupons() {
     if (error) return <div>Error: {error}</div>;
 
     const handleServiceSelection = (serviceIds: number[]) => {
+      console.log(serviceIds);
+      
         if (currentEditingRow && gridRef.current) {
             const updatedData = { ...currentEditingRow, serviceIds };
             const node = gridRef.current.api.getRowNode(currentEditingRow.id);
             if (node) {
                 node.setData(updatedData);
+                console.log(updatedData);
+                
                 dispatch(updateCoupon(updatedData));
             }
         }

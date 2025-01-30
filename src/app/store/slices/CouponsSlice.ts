@@ -32,7 +32,7 @@ export const createCoupon = createAsyncThunk(
     async (couponDto: CreateCouponDto, { rejectWithValue, dispatch }) => {
         try {
             const couponId = await agent.Coupons.create(couponDto);
-            dispatch(fetchCoupons()); // Refresh coupons to get the complete data
+            dispatch(fetchCoupons()); 
             return couponId;
         } catch (error: any) {
             return rejectWithValue(error.response?.data ?? error.message);
@@ -44,6 +44,8 @@ export const updateCoupon = createAsyncThunk(
     'coupons/update',
     async (couponDto: Coupon, { rejectWithValue }) => {
         try {
+          console.log("in slice", couponDto);
+          
             return await agent.Coupons.update(couponDto);
         } catch (error: any) {
             return rejectWithValue(error.response?.data ?? error.message);

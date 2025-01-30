@@ -20,7 +20,7 @@ export default function Sidebar({ variant = 'customer' }: SidebarProps) {
     const adminItems = [
         { text: 'Services', path: '/admin/services' },
         { text: 'Orders', path: '/admin/orders' },
-        { text: 'Coupons', path: '/admin/coupons' },
+        // { text: 'Coupons', path: '/admin/coupons' },
         { text: 'Statistics', path: '/admin/statistics' },
     ];
 

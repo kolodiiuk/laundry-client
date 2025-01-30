@@ -88,6 +88,7 @@ export default function AdminServices() {
         {
             headerName: 'Actions',
             field: 'actions',
+            editable: false,
             cellRenderer: (params: any) => (
                 <Button 
                     color="error" 

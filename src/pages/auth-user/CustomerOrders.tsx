@@ -11,7 +11,7 @@ import UserAddressCellRenderer from "../../components/common/cell-renderers/User
 import { RowClickedEvent } from "ag-grid-community";
 import OrderDetailsDialog from "../../components/orders/OrderDetailsDialog";
 import { fetchAllServices } from "../../app/store/slices/ServiceSlice";
-
+    
 export default function CustomerOrders() {
   const gridRef = useRef<any>();
   const dispatch = useAppDispatch();
@@ -228,11 +228,13 @@ export default function CustomerOrders() {
           p: 2,
           gap: 2
       }}>
-          <Box sx={{ width: 'calc(150vw)', height: 'calc(100vh - 150px)' }}>
+          <Box sx={{ 
+            width: 'calc(150vw)', 
+            height: 'calc(100vh - 150px)' }}>
               <div
                   className={themeName}
                   style={{ 
-                      width: '100%',
+                    //   width: '100%',
                       height: '100%'
                   }}
               >
@@ -245,6 +247,7 @@ export default function CustomerOrders() {
                       defaultColDef={defaultColDef}
                       suppressRowTransform={true}
                       onRowClicked={handleOrderDetailsRequest}
+                      alwaysShowHorizontalScroll={true}
                   />
               </div>
           </Box>
