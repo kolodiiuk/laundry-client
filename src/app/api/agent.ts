@@ -49,7 +49,9 @@ const Auth = {
   getAddresses: (userId: number) => requests.get(`address/user/${userId}`),
   createAddress: (address: any) => requests.post('address', createFormData(address)),
   updateAddress: (address: any) => requests.put('address', createFormData(address)),
-  deleteAddress: (id: number) => requests.delete(`address/${id}`)
+  deleteAddress: (id: number) => requests.delete(`address/${id}`),
+  googleLogin: (credentials: { accessToken: string, email: string, name: string, picture: string }) => 
+    requests.post('auth/google-login', credentials),
 };
 
 const Basket = {
